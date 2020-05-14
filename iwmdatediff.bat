@@ -5,28 +5,28 @@
 	:: ƒtƒ@ƒCƒ‹–¼‚Íƒ\[ƒX‚Æ“¯‚¶
 	set fn=%~n0
 	set exec=%fn%.exe
-	set op_link=-O2 -lgdi32 -luser32 -lshlwapi
+	set op_link=-Os -lgdi32 -luser32 -lshlwapi
 	set src=%fn%.c
 	set lib=lib_iwmutil.a
 
 :: Make ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-	echo --- Compile -S --------------------------------------
+	echo --- Compile -S ------------------------------------
 	for %%s in (%src%) do (
-		gcc %%s -S
+		gcc.exe %%s -S %op_link%
 		echo %%~ns.s
 	)
 	echo.
 
-	echo --- Make -----------------------------------------
+	echo --- Make ------------------------------------------
 	for %%s in (%src%) do (
-		gcc %%s -c -Wall %op_link%
+		gcc.exe %%s -c -Wall %op_link%
 	)
-	gcc *.o %lib% -o %exec% %op_link%
+	gcc.exe *.o %lib% -o %exec% %op_link%
 	echo %exec%
 
 	:: Œãˆ—
-	strip %exec%
+	strip -s %exec%
 	rm *.o
 
 	:: ¸”s
@@ -45,10 +45,10 @@
 
 	%exec%
 	%exec% %s2% %s1%
-	%exec% %s2% %s1% -format "%%g%%y”N%%mŒ%%d“ú %%D’ÊZ“ú %%WT%%w“ú"
+	%exec% %s2% %s1% -format="%%g%%y”N%%mŒ%%d“ú %%D’ÊZ“ú %%WT%%w“ú"
 	%exec% %s1% %s2%
-	%exec% %s1% %s2% -format "%%g%%y”N%%mŒ%%d“ú %%D’ÊZ“ú %%WT%%w“ú"
-	%exec% %s1% %s2% -f "%%M’ÊZŒ %%H’ÊZ %%N’ÊZ•ª %%S’ÊZ•b"
+	%exec% %s1% %s2% -format="%%g%%y”N%%mŒ%%d“ú %%D’ÊZ“ú %%WT%%w“ú"
+	%exec% %s1% %s2% -f="%%M’ÊZŒ %%H’ÊZ %%N’ÊZ•ª %%S’ÊZ•b"
 
 :: Quit ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end
