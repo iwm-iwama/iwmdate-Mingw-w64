@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20200504"
+#define   IWM_VERSION         "iwmdateadd_20200531"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2020 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -45,7 +45,7 @@ main()
 {
 	$program      = iCmdline_getCmd();
 	$args         = iCmdline_getArgs();
-	$argsSize     = $IWM_uAryUsed;
+	$argsSize     = iary_size($args);
 	$colorDefault = iConsole_getBgcolor(); // åªç›ÇÃï∂éöêFÅ^îwåiêF
 
 	// -help "-h"ÇÕhour
