@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20200531"
+#define   IWM_VERSION         "iwmdateadd_20200809"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2020 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -66,11 +66,21 @@ main()
 	INT  *iAryDt    = icalloc_INT(6); // y, m, d, h, n, s
 	INT  *iAryDtAdd = icalloc_INT(6); // Å}y, Å}m, Å}d, Å}h, Å}n, Å}s
 
-	// [0] . | now
-	iAryDt = (imb_cmppi($args[0], ".") || imb_cmpp($args[0], "now") ?
-		idate_now_to_iAryYmdhns_localtime() :
-		idate_MBS_to_iAryYmdhns($args[0])
-	);
+	// [0]
+	/*
+		"." "now" => åªç›éû
+	*/
+	if(imb_cmpp($args[0], ".") || imb_cmpp($args[0], "now"))
+	{
+		iAryDt = idate_now_to_iAryYmdhns_localtime();
+	}
+	else
+	{
+		iAryDt = idate_MBS_to_iAryYmdhns($args[0]);
+	}
+
+
+
 
 	// [1..]
 	for(INT _i1 = 1; _i1 < $argsSize; _i1++)
@@ -154,7 +164,7 @@ main()
 	}
 
 	// Debug
-	///	icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
+	/// icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
 
 	imain_end();
 }
@@ -183,11 +193,11 @@ print_help()
 	iConsole_setTextColor(ColorExp1);
 		P2(" (égópó·)");
 	iConsole_setTextColor(ColorText1);
-		P ("   %s 2000/1/1 -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $program);
+		P ("   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $program);
 	iConsole_setTextColor(ColorExp2);
 		P2(" [ì˙ït]");
 	iConsole_setTextColor(ColorText1);
-		P2("   \".\" \"now\" (åªç›ì˙éû)");
+		P2("   \"now\" \".\" (åªç›ì˙éû)");
 		P2("   \"+2000/01/01\" \"+2000-01-01\"");
 		P2("   \"+2000/01/01 00:00:00\" \"+2000-01-01 00:00:00\"");
 		NL();
@@ -200,11 +210,11 @@ print_help()
 	iConsole_setTextColor(ColorText1);
 		P ("       Å¶STRÇ™ñ≥éwíËÇÃÇ∆Ç´ \"%s\"\n", DATE_FORMAT);
 		P2("       %g : +/-ï\\é¶");
-		P2("       %y : îN(0000)  %Y : îN(â∫2åÖ)  %m : åé(00)  %d : ì˙(00)");
+		P2("       %y : îN(0000)  %m : åé(00)  %d : ì˙(00)");
 		P2("       %h : éû(00)  %n : ï™(00)  %s : ïb(00)");
 		P2("       %a : ójì˙  %A : ójì˙êî");
-		P2("       %c : îNí éZì˙  %C : CJDí éZì˙");
-		P2("       %e : îNí éZèT  %E : CJDí éZèT");
+		P2("       %c : îNí éZì˙  %C : èCê≥ÉÜÉäÉEÉXí éZì˙  %J : ÉÜÉäÉEÉXí éZì˙");
+		P2("       %e : îNí éZèT");
 		P2("       \\t : É^Éu  \\n : â¸çs");
 	iConsole_setTextColor(ColorExp3);
 		P2("   -N");
@@ -218,7 +228,7 @@ print_help()
 		P2("   ÅEÉOÉåÉSÉäÉIóÔÅi1582/10/15Å`9999/12/31Åj");
 		P2("    (íç1) ãÛîíóÔ 1582/10/5Å`1582/10/14 ÇÕÅA\"1582/10/4\" Ç∆ÇµÇƒéÊàµÇ§ÅB");
 		P2("    (íç2) BCóÔÇÕÅA\"-1/1/1\" Ç \"0/1/1\" Ç∆ÇµÇƒéÊàµÇ§ÅB");
-		P2("    (íç3) ÉvÉçÉOÉâÉÄè„ÇÕÅA\"JDí ì˙Ç≈Ç»Ç≠CJDí ì˙\" ÇégópÅB");
+		P2("    (íç3) ÉvÉçÉOÉâÉÄè„ÇÕÅAèCê≥ÉÜÉäÉEÉXóÔÇégópÅB");
 	iConsole_setTextColor(ColorHeaderFooter);
 		LN();
 	iConsole_setTextColor($colorDefault); // å≥ÇÃï∂éöêFÅ^îwåiêF

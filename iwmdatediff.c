@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20200531"
+#define   IWM_VERSION         "iwmdatediff_20200809"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2020 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -21,6 +21,9 @@ VOID print_help();
 #define   ColorText1          (15 + ( 0 * 16))
 
 #define   DATE_FORMAT         "%g%y-%m-%d" // (注)%g付けないと全て正数表示
+
+#define   CJD                 "-4712-01-01 00:00:00"
+#define   JD                  "-4712-01-01 12:00:00"
 
 /*
 	出力フォーマット
@@ -66,17 +69,45 @@ main()
 	INT  *iAryDtBgn = icalloc_INT(6); // y, m, d, h, n, s
 	INT  *iAryDtEnd = icalloc_INT(6); // y, m, d, h, n, s
 
-	// [0] . | now
-	iAryDtBgn = (imb_cmppi($args[0], ".") || imb_cmpp($args[0], "now") ?
-		idate_now_to_iAryYmdhns_localtime() :
-		idate_MBS_to_iAryYmdhns($args[0])
-	);
+	// [0], [1]
+	/*
+		"." "now" => 現在時
+		"cjd"     => 修正ユリウス開始時
+		"jd"      => ユリウス開始時
+	*/
+	if(imb_cmpp($args[0], ".") || imb_cmpp($args[0], "now"))
+	{
+		iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
+	}
+	else if(imb_cmpp($args[0], "cjd"))
+	{
+		iAryDtBgn = idate_MBS_to_iAryYmdhns(CJD);
+	}
+	else if(imb_cmpp($args[0], "jd"))
+	{
+		iAryDtBgn = idate_MBS_to_iAryYmdhns(JD);
+	}
+	else
+	{
+		iAryDtBgn = idate_MBS_to_iAryYmdhns($args[0]);
+	}
 
-	// [1] . | now
-	iAryDtEnd = (imb_cmppi($args[1], ".") || imb_cmpp($args[1], "now") ?
-		idate_now_to_iAryYmdhns_localtime() :
-		idate_MBS_to_iAryYmdhns($args[1])
-	);
+	if(imb_cmpp($args[1], ".") || imb_cmpp($args[1], "now"))
+	{
+		iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
+	}
+	else if(imb_cmpp($args[1], "cjd"))
+	{
+		iAryDtEnd = idate_MBS_to_iAryYmdhns(CJD);
+	}
+	else if(imb_cmpp($args[1], "jd"))
+	{
+		iAryDtEnd = idate_MBS_to_iAryYmdhns(JD);
+	}
+	else
+	{
+		iAryDtEnd = idate_MBS_to_iAryYmdhns($args[1]);
+	}
 
 	// [2..]
 	for(INT _i1 = 2; _i1 < $argsSize; _i1++)
@@ -101,7 +132,7 @@ main()
 	}
 
 	// diff[8]
-	INT *iAryDiff=idate_diff(
+	INT *iAryDiff = idate_diff(
 		iAryDtBgn[0], iAryDtBgn[1], iAryDtBgn[2], iAryDtBgn[3], iAryDtBgn[4], iAryDtBgn[5],
 		iAryDtEnd[0], iAryDtEnd[1], iAryDtEnd[2], iAryDtEnd[3], iAryDtEnd[4], iAryDtEnd[5]
 	);
@@ -148,11 +179,13 @@ print_help()
 	iConsole_setTextColor(ColorExp1);
 		P2(" (使用例)");
 	iConsole_setTextColor(ColorText1);
-		P ("   %s . 2000/01/01 -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $program);
+		P ("   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $program);
 	iConsole_setTextColor(ColorExp2);
 		P2(" [日付1] [日付2]");
 	iConsole_setTextColor(ColorText1);
-		P2("   \".\" \"now\" (現在日時)");
+		P2("   \"now\" \".\" (現在日時)");
+		P2("   \"cjd\"     (修正ユリウス開始日 -4712/01/01 00:00:00)");
+		P2("   \"jd\"      (ユリウス開始日     -4712/01/01 12:00:00)");
 		P2("   \"+2000/01/01\" \"+2000-01-01\"");
 		P2("   \"+2000/01/01 00:00:00\" \"+2000-01-01 00:00:00\"");
 		NL();
@@ -162,10 +195,12 @@ print_help()
 		P2("   -format=STR | -f=STR");
 	iConsole_setTextColor(ColorText1);
 		P ("       ※STRが無指定のとき \"%s\"\n", DATE_FORMAT);
-		P2("       %g:+/-表\示");
-		P2("       %y:年  %m:月  %d:日  %h:時  %n:分  %s:秒");
-		P2("       通算(満)  %M:月  %D:日  %H:時  %N:分  %S:秒  %W:週  %w:週余日");
-		P2("       \\t:タブ  \\n:改行");
+		P2("       %g : +/-表\示");
+		P2("       %y : 年  %m : 月  %d : 日  %h : 時  %n : 分  %s : 秒");
+		P2("       通算  %Y : 年  %M : 月  %D : 日");
+		P2("             %H : 時  %N : 分  %S : 秒");
+		P2("             %W : 週  %w : 週余日");
+		P2("       \\t : タブ  \\n : 改行");
 	iConsole_setTextColor(ColorExp3);
 		P2("   -N");
 	iConsole_setTextColor(ColorText1);
@@ -178,7 +213,7 @@ print_help()
 		P2("   ・グレゴリオ暦（1582/10/15～9999/12/31）");
 		P2("    (注1) 空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。");
 		P2("    (注2) BC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。");
-		P2("    (注3) プログラム上は、\"JD通日でなくCJD通日\" を使用。");
+		P2("    (注3) プログラム上は、修正ユリウス暦を使用。");
 	iConsole_setTextColor(ColorHeaderFooter);
 		LN();
 	iConsole_setTextColor($colorDefault); // 元の文字色／背景色
