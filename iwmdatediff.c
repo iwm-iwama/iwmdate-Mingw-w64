@@ -66,8 +66,8 @@ main()
 		imain_end();
 	}
 
-	INT  *iAryDtBgn = icalloc_INT(6); // y, m, d, h, n, s
-	INT  *iAryDtEnd = icalloc_INT(6); // y, m, d, h, n, s
+	INT *iAryDtBgn = icalloc_INT(6); // y, m, d, h, n, s
+	INT *iAryDtEnd = icalloc_INT(6); // y, m, d, h, n, s
 
 	// [0], [1]
 	/*

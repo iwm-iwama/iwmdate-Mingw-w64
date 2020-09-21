@@ -63,8 +63,8 @@ main()
 		imain_end();
 	}
 
-	INT  *iAryDt    = icalloc_INT(6); // y, m, d, h, n, s
-	INT  *iAryDtAdd = icalloc_INT(6); // Å}y, Å}m, Å}d, Å}h, Å}n, Å}s
+	INT *iAryDt    = icalloc_INT(6); // y, m, d, h, n, s
+	INT *iAryDtAdd = icalloc_INT(6); // Å}y, Å}m, Å}d, Å}h, Å}n, Å}s
 
 	// [0]
 	/*
@@ -78,9 +78,6 @@ main()
 	{
 		iAryDt = idate_MBS_to_iAryYmdhns($args[0]);
 	}
-
-
-
 
 	// [1..]
 	for(INT _i1 = 1; _i1 < $argsSize; _i1++)
