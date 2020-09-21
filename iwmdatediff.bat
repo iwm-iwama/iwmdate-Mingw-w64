@@ -6,6 +6,7 @@
 	set fn=%~n0
 	set src=%fn%.c
 	set exec=%fn%.exe
+	set cc=gcc.exe
 	set lib=lib_iwmutil.a
 	set option=-Os -lgdi32 -luser32 -lshlwapi
 
@@ -13,17 +14,17 @@
 
 	echo --- Compile -S ------------------------------------
 	for %%s in (%src%) do (
-		gcc.exe %%s -S %option%
+		%cc% %%s -S %option%
 		echo %%~ns.s
 	)
 	echo.
 
 	echo --- Make ------------------------------------------
 	for %%s in (%src%) do (
-		gcc.exe %%s -g -c -Wall %option%
+		%cc% %%s -g -c -Wall %option%
 		objdump -S -d %%~ns.o > %%~ns.objdump.txt
 	)
-	gcc.exe *.o %lib% -o %exec% %option%
+	%cc% *.o %lib% -o %exec% %option%
 	echo %exec%
 
 	:: Œãˆ—
@@ -49,7 +50,13 @@
 	%exec% %s2% %s1% -format="%%g%%y”N%%mŒŽ%%d“ú %%D’ÊŽZ“ú %%WT%%w“ú"
 	%exec% %s1% %s2%
 	%exec% %s1% %s2% -format="%%g%%y”N%%mŒŽ%%d“ú %%D’ÊŽZ“ú %%WT%%w“ú"
-	%exec% %s1% %s2% -f="%%M’ÊŽZŒŽ %%H’ÊŽZŽž %%N’ÊŽZ•ª %%S’ÊŽZ•b"
+	%exec% %s1% %s2% -f="%%Y’ÊŽZ”N %%M’ÊŽZŒŽ %%H’ÊŽZŽž %%N’ÊŽZ•ª %%S’ÊŽZ•b"
+
+	echo.
+	echo cjd . -f="g:%%g M:%%M D:%%D H:%%H N:%%N S:%%S W:%%W"
+	%exec% cjd . -f="g:%%g M:%%M D:%%D H:%%H N:%%N S:%%S W:%%W"
+	echo jd . -f="g:%%g M:%%M D:%%D H:%%H N:%%N S:%%S W:%%W"
+	%exec% jd . -f="g:%%g M:%%M D:%%D H:%%H N:%%N S:%%S W:%%W"
 
 :: Quit ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end
