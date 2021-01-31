@@ -8,7 +8,7 @@
 	set exec=%fn%.exe
 	set cc=gcc.exe
 	set lib=lib_iwmutil.a
-	set option=-Os -lgdi32 -luser32 -lshlwapi
+	set option=-Os -Wall -lgdi32 -luser32 -lshlwapi
 
 :: Make ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -21,7 +21,7 @@
 
 	echo --- Make ------------------------------------------
 	for %%s in (%src%) do (
-		%cc% %%s -g -c -Wall %option%
+		%cc% %%s -g -c %option%
 		objdump -S -d %%~ns.o > %%~ns.objdump.txt
 	)
 	%cc% *.o %lib% -o %exec% %option%
