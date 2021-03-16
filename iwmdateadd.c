@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20200809"
-#define   IWM_COPYRIGHT       "Copyright (C)2008-2020 iwm-iwama"
+#define   IWM_VERSION         "iwmdateadd_20210316"
+#define   IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
 
@@ -170,13 +170,10 @@ VOID
 print_version()
 {
 	LN();
-	P (" %s\n",
-		IWM_COPYRIGHT
-	);
-	P ("   Ver.%s+%s\n",
-		IWM_VERSION,
-		LIB_IWMUTIL_VERSION
-	);
+	P (" %s", IWM_COPYRIGHT);
+		NL();
+	P ("   Ver.%s+%s", IWM_VERSION, LIB_IWMUTIL_VERSION);
+		NL();
 }
 
 VOID
@@ -186,26 +183,31 @@ print_help()
 		print_version();
 		LN();
 	iConsole_setTextColor(ColorBgText1);
-		P (" %s [日付] [オプション] \n\n", $program);
+		P (" %s [日付] [オプション] ", $program);
 	iConsole_setTextColor(ColorExp1);
+		NL();
+		NL();
 		P2(" (使用例)");
 	iConsole_setTextColor(ColorText1);
-		P ("   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $program);
+		P ("   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"", $program);
 	iConsole_setTextColor(ColorExp2);
+		NL();
+		NL();
 		P2(" [日付]");
 	iConsole_setTextColor(ColorText1);
 		P2("   \"now\" \".\" (現在日時)");
 		P2("   \"+2000/01/01\" \"+2000-01-01\"");
 		P2("   \"+2000/01/01 00:00:00\" \"+2000-01-01 00:00:00\"");
-		NL();
 	iConsole_setTextColor(ColorExp2);
+		NL();
 		P2(" [オプション]");
 	iConsole_setTextColor(ColorExp3);
 		P2("   -y=[±年] -m=[±月] -d=[±日] -w=[±週] -h=[±時] -n=[±分] -s=[±秒]");
 		NL();
 		P2("   -format=STR | -f=STR");
 	iConsole_setTextColor(ColorText1);
-		P ("       ※STRが無指定のとき \"%s\"\n", DATE_FORMAT);
+		P ("       ※STRが無指定のとき \"%s\"", DATE_FORMAT);
+		NL();
 		P2("       %g : +/-表\示");
 		P2("       %y : 年(0000)  %m : 月(00)  %d : 日(00)");
 		P2("       %h : 時(00)  %n : 分(00)  %s : 秒(00)");
@@ -217,8 +219,8 @@ print_help()
 		P2("   -N");
 	iConsole_setTextColor(ColorText1);
 		P2("       改行しない");
-		NL();
 	iConsole_setTextColor(ColorExp1);
+		NL();
 		P2(" (備考)");
 	iConsole_setTextColor(ColorText1);
 		P2("   ・ユリウス暦 （-4712/01/01～1582/10/04）");
@@ -227,6 +229,7 @@ print_help()
 		P2("    (注2) BC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。");
 		P2("    (注3) プログラム上は、修正ユリウス暦を使用。");
 	iConsole_setTextColor(ColorHeaderFooter);
+		NL();
 		LN();
 	iConsole_setTextColor($colorDefault); // 元の文字色／背景色
 }
