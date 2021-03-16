@@ -13,6 +13,7 @@ VOID print_help();
 //  4 = Maroon   5 = Purple   6 = Olive    7 = Silver
 //  8 = Gray     9 = Blue    10 = Lime    11 = Aqua
 // 12 = Red     13 = Fuchsia 14 = Yellow  15 = White
+#define   ColorTitle          (15 + ( 9 * 16))
 #define   ColorHeaderFooter   ( 7 + ( 0 * 16))
 #define   ColorBgText1        (15 + (12 * 16))
 #define   ColorExp1           (13 + ( 0 * 16))
@@ -171,11 +172,17 @@ print_help()
 	iConsole_setTextColor(ColorHeaderFooter);
 		print_version();
 		LN();
+	iConsole_setTextColor(ColorTitle);
+		P (" 日時差を計算 ");
+	iConsole_setTextColor($colorDefault);
+		NL();
+		NL();
 	iConsole_setTextColor(ColorBgText1);
 		P (" %s [日付1] [日付2] [オプション] ", $program);
+	iConsole_setTextColor($colorDefault);
+		NL();
+		NL();
 	iConsole_setTextColor(ColorExp1);
-		NL();
-		NL();
 		P2(" (使用例)");
 	iConsole_setTextColor(ColorText1);
 		P ("   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"", $program);
