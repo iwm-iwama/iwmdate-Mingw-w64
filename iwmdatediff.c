@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20210316"
+#define   IWM_VERSION         "iwmdatediff_20210317"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -13,13 +13,19 @@ VOID print_help();
 //  4 = Maroon   5 = Purple   6 = Olive    7 = Silver
 //  8 = Gray     9 = Blue    10 = Lime    11 = Aqua
 // 12 = Red     13 = Fuchsia 14 = Yellow  15 = White
-#define   ColorTitle          (15 + ( 9 * 16))
-#define   ColorHeaderFooter   ( 7 + ( 0 * 16))
-#define   ColorBgText1        (15 + (12 * 16))
-#define   ColorExp1           (13 + ( 0 * 16))
-#define   ColorExp2           (14 + ( 0 * 16))
-#define   ColorExp3           (11 + ( 0 * 16))
-#define   ColorText1          (15 + ( 0 * 16))
+
+// タイトル
+#define   COLOR01             (15 + ( 9 * 16))
+// 入力例／注
+#define   COLOR11             (15 + (12 * 16))
+#define   COLOR12             (13 + ( 0 * 16))
+#define   COLOR13             (12 + ( 0 * 16))
+// 引数
+#define   COLOR21             (14 + ( 0 * 16))
+#define   COLOR22             (11 + ( 0 * 16))
+// 説明
+#define   COLOR91             (15 + ( 0 * 16))
+#define   COLOR92             ( 7 + ( 0 * 16))
 
 #define   DATE_FORMAT         "%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
@@ -63,7 +69,6 @@ main()
 	if(imb_cmpp($args[0], "-v") || imb_cmpp($args[0], "-version"))
 	{
 		print_version();
-		LN();
 		imain_end();
 	}
 
@@ -160,71 +165,50 @@ VOID
 print_version()
 {
 	LN();
-	P (" %s", IWM_COPYRIGHT);
-	NL();
-	P ("   Ver.%s+%s", IWM_VERSION, LIB_IWMUTIL_VERSION);
-	NL();
+	P (" %s\n", IWM_COPYRIGHT);
+	P ("   Ver.%s+%s\n", IWM_VERSION, LIB_IWMUTIL_VERSION);
+	LN();
 }
 
 VOID
 print_help()
 {
-	iConsole_setTextColor(ColorHeaderFooter);
+	PZ(COLOR92, NULL);
 		print_version();
-		LN();
-	iConsole_setTextColor(ColorTitle);
-		P (" 日時差を計算 ");
-	iConsole_setTextColor($colorDefault);
-		NL();
-		NL();
-	iConsole_setTextColor(ColorBgText1);
-		P (" %s [日付1] [日付2] [オプション] ", $program);
-	iConsole_setTextColor($colorDefault);
-		NL();
-		NL();
-	iConsole_setTextColor(ColorExp1);
-		P2(" (使用例)");
-	iConsole_setTextColor(ColorText1);
-		P ("   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"", $program);
-	iConsole_setTextColor(ColorExp2);
-		NL();
-		NL();
-		P2(" [日付1] [日付2]");
-	iConsole_setTextColor(ColorText1);
+	PZ(COLOR01, " 日時差を計算 \n\n");
+	PZ(COLOR11, " %s [日付1] [日付2] [オプション] \n\n", $program);
+	PZ(COLOR12, " (使用例)\n");
+	PZ(COLOR91, "   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $program);
+	PZ(COLOR21, " [日付1] [日付2]\n");
+	PZ(COLOR91, NULL);
 		P2("   \"now\" \".\" (現在日時)");
 		P2("   \"cjd\"     (修正ユリウス開始日 -4712/01/01 00:00:00)");
 		P2("   \"jd\"      (ユリウス開始日     -4712/01/01 12:00:00)");
 		P2("   \"+2000/01/01\" \"+2000-01-01\"");
-		P2("   \"+2000/01/01 00:00:00\" \"+2000-01-01 00:00:00\"");
-	iConsole_setTextColor(ColorExp2);
-		NL();
-		P2(" [オプション]");
-	iConsole_setTextColor(ColorExp3);
-		P2("   -format=STR | -f=STR");
-	iConsole_setTextColor(ColorText1);
-		P ("       ※STRが無指定のとき \"%s\"", DATE_FORMAT);
-		NL();
+		P2("   \"+2000/01/01 00:00:00\" \"+2000-01-01 00:00:00\"\n");
+	PZ(COLOR21, " [オプション]\n");
+	PZ(COLOR22, "   -format=STR | -f=STR\n");
+	PZ(COLOR91, NULL);
+		P ("       ※STRが無指定のとき \"%s\"\n", DATE_FORMAT);
 		P2("       %g : +/-表\示");
 		P2("       %y : 年  %m : 月  %d : 日  %h : 時  %n : 分  %s : 秒");
 		P2("       通算  %Y : 年  %M : 月  %D : 日");
 		P2("             %H : 時  %N : 分  %S : 秒");
 		P2("             %W : 週  %w : 週余日");
 		P2("       \\t : タブ  \\n : 改行");
-	iConsole_setTextColor(ColorExp3);
-		P2("   -N");
-	iConsole_setTextColor(ColorText1);
-		P2("       改行しない");
-	iConsole_setTextColor(ColorExp1);
-		NL();
-		P2(" (備考)");
-	iConsole_setTextColor(ColorText1);
+	PZ(COLOR22, "   -N\n");
+	PZ(COLOR91, "       改行しない\n\n");
+	PZ(COLOR12, " (備考)\n");
+	PZ(COLOR91, NULL);
 		P2("   ・ユリウス暦 （-4712/01/01～1582/10/04）");
 		P2("   ・グレゴリオ暦（1582/10/15～9999/12/31）");
-		P2("    (注1) 空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。");
-		P2("    (注2) BC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。");
-		P2("    (注3) プログラム上は、修正ユリウス暦を使用。");
-	iConsole_setTextColor(ColorHeaderFooter);
-		NL();
+	PZ(COLOR13, "    (注１) ");
+	PZ(COLOR91, "空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。\n");
+	PZ(COLOR13, "    (注２) ");
+	PZ(COLOR91, "BC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。\n");
+	PZ(COLOR13, "    (注３) ");
+	PZ(COLOR91, "プログラム上は、修正ユリウス暦を使用。\n\n");
+	PZ(COLOR92, NULL);
 		LN();
-	iConsole_setTextColor($colorDefault); // 元の文字色／背景色
+	PZ($colorDefault, NULL);
 }
