@@ -47,20 +47,20 @@ INT
 main()
 {
 	// lib_iwmutil 初期化
-	iCLI_getCmd();       //=> $IWM_Cmd
-	iCLI_getCmdOpt();    //=> $IWM_CmdOption, $IWM_CmdOptionSize
+	iCLI_getCMD();       //=> $IWM_CMD
+	iCLI_getARGS();      //=> $IWM_ARGV, $IWM_ARGC
 	iConsole_getColor(); //=> $IWM_ColorDefault, $IWM_StdoutHandle
 	iExecSec_init();     //=> $IWM_ExecSecBgn
 
 	// -help "-h"はhour
-	if(! $IWM_CmdOptionSize || imb_cmpp($IWM_CmdOption[0], "-help"))
+	if(! $IWM_ARGC || imb_cmpp($IWM_ARGV[0], "-help"))
 	{
 		print_help();
 		imain_end();
 	}
 
 	// -v | -version
-	if(imb_cmpp($IWM_CmdOption[0], "-v") || imb_cmpp($IWM_CmdOption[0], "-version"))
+	if(imb_cmpp($IWM_ARGV[0], "-v") || imb_cmpp($IWM_ARGV[0], "-version"))
 	{
 		print_version();
 		imain_end();
@@ -75,44 +75,44 @@ main()
 		"cjd"     => 修正ユリウス開始時
 		"jd"      => ユリウス開始時
 	*/
-	if(imb_cmpp($IWM_CmdOption[0], ".") || imb_cmpp($IWM_CmdOption[0], "now"))
+	if(imb_cmpp($IWM_ARGV[0], ".") || imb_cmpp($IWM_ARGV[0], "now"))
 	{
 		iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
 	}
-	else if(imb_cmpp($IWM_CmdOption[0], "cjd"))
+	else if(imb_cmpp($IWM_ARGV[0], "cjd"))
 	{
 		iAryDtBgn = idate_MBS_to_iAryYmdhns(CJD);
 	}
-	else if(imb_cmpp($IWM_CmdOption[0], "jd"))
+	else if(imb_cmpp($IWM_ARGV[0], "jd"))
 	{
 		iAryDtBgn = idate_MBS_to_iAryYmdhns(JD);
 	}
 	else
 	{
-		iAryDtBgn = idate_MBS_to_iAryYmdhns($IWM_CmdOption[0]);
+		iAryDtBgn = idate_MBS_to_iAryYmdhns($IWM_ARGV[0]);
 	}
 
-	if(imb_cmpp($IWM_CmdOption[1], ".") || imb_cmpp($IWM_CmdOption[1], "now"))
+	if(imb_cmpp($IWM_ARGV[1], ".") || imb_cmpp($IWM_ARGV[1], "now"))
 	{
 		iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
 	}
-	else if(imb_cmpp($IWM_CmdOption[1], "cjd"))
+	else if(imb_cmpp($IWM_ARGV[1], "cjd"))
 	{
 		iAryDtEnd = idate_MBS_to_iAryYmdhns(CJD);
 	}
-	else if(imb_cmpp($IWM_CmdOption[1], "jd"))
+	else if(imb_cmpp($IWM_ARGV[1], "jd"))
 	{
 		iAryDtEnd = idate_MBS_to_iAryYmdhns(JD);
 	}
 	else
 	{
-		iAryDtEnd = idate_MBS_to_iAryYmdhns($IWM_CmdOption[1]);
+		iAryDtEnd = idate_MBS_to_iAryYmdhns($IWM_ARGV[1]);
 	}
 
 	// [2..]
-	for(INT _i1 = 2; _i1 < $IWM_CmdOptionSize; _i1++)
+	for(INT _i1 = 2; _i1 < $IWM_ARGC; _i1++)
 	{
-		MBS **_as1 = ija_split($IWM_CmdOption[_i1], "=", "\"\"\'\'", FALSE);
+		MBS **_as1 = ija_split($IWM_ARGV[_i1], "=", "\"\"\'\'", FALSE);
 		MBS **_as2 = ija_split(_as1[1], ",", "\"\"\'\'", TRUE);
 
 		// -f | -format
@@ -170,9 +170,9 @@ print_help()
 	PZ(COLOR92, NULL);
 		print_version();
 	PZ(COLOR01, " 日時差を計算 \n\n");
-	PZ(COLOR11, " %s [日付1] [日付2] [オプション] \n\n", $IWM_Cmd);
+	PZ(COLOR11, " %s [日付1] [日付2] [オプション] \n\n", $IWM_CMD);
 	PZ(COLOR12, " (使用例)\n");
-	PZ(COLOR91, "   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $IWM_Cmd);
+	PZ(COLOR91, "   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $IWM_CMD);
 	PZ(COLOR21, " [日付1] [日付2]\n");
 	PZ(COLOR91, NULL);
 		P2("   \"now\" \".\" (現在日時)");
