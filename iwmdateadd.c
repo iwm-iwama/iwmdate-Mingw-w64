@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20210317"
+#define   IWM_VERSION         "iwmdateadd_20210319"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -39,31 +39,25 @@ MBS  *_Format = DATE_FORMAT;
 	-N
 */
 BOOL _NL = TRUE;
-/*
-	実行関係
-*/
-MBS  *$program     = "";
-MBS  **$args       = {0};
-UINT $argsSize     = 0;
-UINT $colorDefault = 0;
 
 INT
 main()
 {
-	$program      = iCmdline_getCmd();
-	$args         = iCmdline_getArgs();
-	$argsSize     = iary_size($args);
-	$colorDefault = iConsole_getBgcolor(); // 現在の文字色／背景色
+	// lib_iwmutil 初期化
+	iCLI_getCmd();       //=> $IWM_Cmd
+	iCLI_getCmdOpt();    //=> $IWM_CmdOption, $IWM_CmdOptionSize
+	iConsole_getColor(); //=> $IWM_ColorDefault, $IWM_StdoutHandle
+	iExecSec_init();     //=> $IWM_ExecSecBgn
 
 	// -help "-h"はhour
-	if($argsSize == 0 || imb_cmpp($args[0], "-help"))
+	if(! $IWM_CmdOptionSize || imb_cmpp($IWM_CmdOption[0], "-help"))
 	{
 		print_help();
 		imain_end();
 	}
 
 	// -v | -version
-	if(imb_cmpp($args[0], "-v") || imb_cmpp($args[0], "-version"))
+	if(imb_cmpp($IWM_CmdOption[0], "-v") || imb_cmpp($IWM_CmdOption[0], "-version"))
 	{
 		print_version();
 		imain_end();
@@ -76,19 +70,19 @@ main()
 	/*
 		"." "now" => 現在時
 	*/
-	if(imb_cmpp($args[0], ".") || imb_cmpp($args[0], "now"))
+	if(imb_cmpp($IWM_CmdOption[0], ".") || imb_cmpp($IWM_CmdOption[0], "now"))
 	{
 		iAryDt = idate_now_to_iAryYmdhns_localtime();
 	}
 	else
 	{
-		iAryDt = idate_MBS_to_iAryYmdhns($args[0]);
+		iAryDt = idate_MBS_to_iAryYmdhns($IWM_CmdOption[0]);
 	}
 
 	// [1..]
-	for(INT _i1 = 1; _i1 < $argsSize; _i1++)
+	for(INT _i1 = 1; _i1 < $IWM_CmdOptionSize; _i1++)
 	{
-		MBS **_as1 = ija_split($args[_i1], "=", "\"\"\'\'", FALSE);
+		MBS **_as1 = ija_split($IWM_CmdOption[_i1], "=", "\"\"\'\'", FALSE);
 		MBS **_as2 = ija_split(_as1[1], ",", "\"\"\'\'", TRUE);
 
 		// -y
@@ -187,9 +181,9 @@ print_help()
 	PZ(COLOR92, NULL);
 		print_version();
 	PZ(COLOR01, " 日時の前後を計算 \n\n");
-	PZ(COLOR11, " %s [日付] [オプション] \n\n", $program);
+	PZ(COLOR11, " %s [日付] [オプション] \n\n", $IWM_Cmd);
 	PZ(COLOR12, " (使用例)\n");
-	PZ(COLOR91, "   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $program);
+	PZ(COLOR91, "   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $IWM_Cmd);
 	PZ(COLOR21, " [日付]\n");
 	PZ(COLOR91, NULL);
 		P2("   \"now\" \".\" (現在日時)");
@@ -222,5 +216,5 @@ print_help()
 	PZ(COLOR91, "プログラム上は、修正ユリウス暦を使用。\n\n");
 	PZ(COLOR92, NULL);
 		LN();
-	PZ($colorDefault, NULL);
+	PZ(-1, NULL);
 }
