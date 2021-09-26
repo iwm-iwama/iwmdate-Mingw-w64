@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20210603"
-#define   IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
+#define  IWM_VERSION         "iwmdateadd_20210924"
+#define  IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
 
@@ -15,25 +15,25 @@ VOID print_help();
 // 12 = Red     13 = Fuchsia 14 = Yellow  15 = White
 
 // タイトル
-#define   COLOR01             (15 + ( 9 * 16))
+#define  COLOR01             (15 + ( 9 * 16))
 // 入力例／注
-#define   COLOR11             (15 + (12 * 16))
-#define   COLOR12             (13 + ( 0 * 16))
-#define   COLOR13             (12 + ( 0 * 16))
+#define  COLOR11             (15 + (12 * 16))
+#define  COLOR12             (13 + ( 0 * 16))
+#define  COLOR13             (12 + ( 0 * 16))
 // 引数
-#define   COLOR21             (14 + ( 0 * 16))
-#define   COLOR22             (11 + ( 0 * 16))
+#define  COLOR21             (14 + ( 0 * 16))
+#define  COLOR22             (11 + ( 0 * 16))
 // 説明
-#define   COLOR91             (15 + ( 0 * 16))
-#define   COLOR92             ( 7 + ( 0 * 16))
+#define  COLOR91             (15 + ( 0 * 16))
+#define  COLOR92             ( 7 + ( 0 * 16))
 
-#define   DATE_FORMAT         "%g%y-%m-%d" // (注)%g付けないと全て正数表示
+#define  DATE_FORMAT         "%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
 /*
 	出力フォーマット
 	-f=STR | -format=STR
 */
-MBS  *_Format = DATE_FORMAT;
+MBS *_Format = DATE_FORMAT;
 /*
 	改行するとき TRUE
 	-N
@@ -44,8 +44,7 @@ INT
 main()
 {
 	// lib_iwmutil 初期化
-	iCLI_getCMD();       //=> $IWM_CMD
-	iCLI_getARGS();      //=> $IWM_ARGV, $IWM_ARGC
+	iCLI_getARGV();      //=> $IWM_CMD, $IWM_ARGV, $IWM_ARGC
 	iConsole_getColor(); //=> $IWM_ColorDefault, $IWM_StdoutHandle
 	iExecSec_init();     //=> $IWM_ExecSecBgn
 
@@ -82,55 +81,54 @@ main()
 	// [1..]
 	for(INT _i1 = 1; _i1 < $IWM_ARGC; _i1++)
 	{
-		MBS **_as1 = ija_split($IWM_ARGV[_i1], "=", "\"\"\'\'", FALSE);
-		MBS **_as2 = ija_split(_as1[1], ",", "\"\"\'\'", TRUE);
+		MBS **_as1 = ija_split($IWM_ARGV[_i1], "=");
 
 		// -y
 		if(imb_cmpp(_as1[0], "-y"))
 		{
-			iAryDtAdd[0] += inum_atoi(_as2[0]);
+			iAryDtAdd[0] += inum_atoi(_as1[1]);
 		}
 
 		// -m
 		if(imb_cmpp(_as1[0], "-m"))
 		{
-			iAryDtAdd[1] += inum_atoi(_as2[0]);
+			iAryDtAdd[1] += inum_atoi(_as1[1]);
 		}
 
 		// -d
 		if(imb_cmpp(_as1[0], "-d"))
 		{
-			iAryDtAdd[2] += inum_atoi(_as2[0]);
+			iAryDtAdd[2] += inum_atoi(_as1[1]);
 		}
 
 		// -w
 		if(imb_cmpp(_as1[0], "-w"))
 		{
-			iAryDtAdd[2] += inum_atoi(_as2[0]) * 7;
+			iAryDtAdd[2] += inum_atoi(_as1[1]) * 7;
 		}
 
 		// -h
 		if(imb_cmpp(_as1[0], "-h"))
 		{
-			iAryDtAdd[3] += inum_atoi(_as2[0]);
+			iAryDtAdd[3] += inum_atoi(_as1[1]);
 		}
 
 		// -n
 		if(imb_cmpp(_as1[0], "-n"))
 		{
-			iAryDtAdd[4] += inum_atoi(_as2[0]);
+			iAryDtAdd[4] += inum_atoi(_as1[1]);
 		}
 
 		// -s
 		if(imb_cmpp(_as1[0], "-s"))
 		{
-			iAryDtAdd[5] += inum_atoi(_as2[0]);
+			iAryDtAdd[5] += inum_atoi(_as1[1]);
 		}
 
 		// -f | -format
 		if(imb_cmpp(_as1[0], "-f") || imb_cmpp(_as1[0], "-format"))
 		{
-			_Format = ims_clone(_as2[0]);
+			_Format = ims_clone(_as1[1]);
 		}
 
 		// -N
@@ -139,7 +137,6 @@ main()
 			_NL = FALSE;
 		}
 
-		ifree(_as2);
 		ifree(_as1);
 	}
 

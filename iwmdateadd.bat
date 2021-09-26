@@ -26,9 +26,10 @@
 	)
 	%cc% *.o %lib% -o %exec% %option%
 	echo %exec%
+	echo.
 
 	:: å„èàóù
-	strip -s %exec%
+	strip %exec%
 	rm *.o
 
 	:: é∏îs

@@ -26,9 +26,10 @@
 	)
 	%cc% *.o %lib% -o %exec% %option%
 	echo %exec%
+	echo.
 
 	:: å„èàóù
-	strip -s %exec%
+	strip %exec%
 	rm *.o
 
 	:: é∏îs
@@ -43,7 +44,6 @@
 
 	set s1="1970/12/10"
 	set s2=now
-	echo %s1% - %s2%
 
 	%exec%
 	%exec% %s2% %s1%
