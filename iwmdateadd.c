@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define  IWM_VERSION         "iwmdateadd_20210924"
+#define  IWM_VERSION         "iwmdateadd_20211111"
 #define  IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -44,19 +44,19 @@ INT
 main()
 {
 	// lib_iwmutil 初期化
-	iCLI_getARGV();      //=> $IWM_CMD, $IWM_ARGV, $IWM_ARGC
-	iConsole_getColor(); //=> $IWM_ColorDefault, $IWM_StdoutHandle
-	iExecSec_init();     //=> $IWM_ExecSecBgn
+	iCLI_getARGV();      //=> $CMD, $ARGV, $ARGC
+	iConsole_getColor(); //=> $ColorDefault, $StdoutHandle
+	iExecSec_init();     //=> $ExecSecBgn
 
 	// -h | -help
-	if(! $IWM_ARGC || imb_cmpp($IWM_ARGV[0], "-h") || imb_cmpp($IWM_ARGV[0], "-help"))
+	if(! $ARGC || iCLI_getOptMatch(0, "-h", "-help"))
 	{
 		print_help();
 		imain_end();
 	}
 
 	// -v | -version
-	if(imb_cmpp($IWM_ARGV[0], "-v") || imb_cmpp($IWM_ARGV[0], "-version"))
+	if(iCLI_getOptMatch(0, "-v", "-version"))
 	{
 		print_version();
 		imain_end();
@@ -69,75 +69,73 @@ main()
 	/*
 		"." "now" => 現在時
 	*/
-	if(imb_cmpp($IWM_ARGV[0], ".") || imb_cmpp($IWM_ARGV[0], "now"))
+	if(iCLI_getOptMatch(0, ".", "now"))
 	{
 		iAryDt = idate_now_to_iAryYmdhns_localtime();
 	}
 	else
 	{
-		iAryDt = idate_MBS_to_iAryYmdhns($IWM_ARGV[0]);
+		iAryDt = idate_MBS_to_iAryYmdhns($ARGV[0]);
 	}
 
-	// [1..]
-	for(INT _i1 = 1; _i1 < $IWM_ARGC; _i1++)
-	{
-		MBS **_as1 = ija_split($IWM_ARGV[_i1], "=");
+	MBS *p1 = 0;
 
+	// [1..]
+	for(INT _i1 = 1; _i1 < $ARGC; _i1++)
+	{
 		// -y
-		if(imb_cmpp(_as1[0], "-y"))
+		if((p1 = iCLI_getOptValue(_i1, "-y=", NULL)))
 		{
-			iAryDtAdd[0] += inum_atoi(_as1[1]);
+			iAryDtAdd[0] += inum_atoi(p1);
 		}
 
 		// -m
-		if(imb_cmpp(_as1[0], "-m"))
+		if((p1 = iCLI_getOptValue(_i1, "-m=", NULL)))
 		{
-			iAryDtAdd[1] += inum_atoi(_as1[1]);
+			iAryDtAdd[1] += inum_atoi(p1);
 		}
 
 		// -d
-		if(imb_cmpp(_as1[0], "-d"))
+		if((p1 = iCLI_getOptValue(_i1, "-d=", NULL)))
 		{
-			iAryDtAdd[2] += inum_atoi(_as1[1]);
+			iAryDtAdd[2] += inum_atoi(p1);
 		}
 
 		// -w
-		if(imb_cmpp(_as1[0], "-w"))
+		if((p1 = iCLI_getOptValue(_i1, "-w=", NULL)))
 		{
-			iAryDtAdd[2] += inum_atoi(_as1[1]) * 7;
+			iAryDtAdd[2] += inum_atoi(p1) * 7;
 		}
 
 		// -h
-		if(imb_cmpp(_as1[0], "-h"))
+		if((p1 = iCLI_getOptValue(_i1, "-h=", NULL)))
 		{
-			iAryDtAdd[3] += inum_atoi(_as1[1]);
+			iAryDtAdd[3] += inum_atoi(p1);
 		}
 
 		// -n
-		if(imb_cmpp(_as1[0], "-n"))
+		if((p1 = iCLI_getOptValue(_i1, "-n=", NULL)))
 		{
-			iAryDtAdd[4] += inum_atoi(_as1[1]);
+			iAryDtAdd[4] += inum_atoi(p1);
 		}
 
 		// -s
-		if(imb_cmpp(_as1[0], "-s"))
+		if((p1 = iCLI_getOptValue(_i1, "-s=", NULL)))
 		{
-			iAryDtAdd[5] += inum_atoi(_as1[1]);
+			iAryDtAdd[5] += inum_atoi(p1);
 		}
 
 		// -f | -format
-		if(imb_cmpp(_as1[0], "-f") || imb_cmpp(_as1[0], "-format"))
+		if((p1 = iCLI_getOptValue(_i1, "-f=", "-format=")))
 		{
-			_Format = ims_clone(_as1[1]);
+			_Format = ims_clone(p1);
 		}
 
 		// -N
-		if(imb_cmpp(_as1[0], "-N"))
+		if(iCLI_getOptMatch(_i1, "-N", NULL))
 		{
 			_NL = FALSE;
 		}
-
-		ifree(_as1);
 	}
 
 	iAryDt = idate_add(
@@ -179,9 +177,9 @@ print_help()
 {
 	print_version();
 	PZ(COLOR01, " 日時の前後を計算 \n\n");
-	PZ(COLOR11, " %s [日付] [オプション] \n\n", $IWM_CMD);
+	PZ(COLOR11, " %s [日付] [オプション] \n\n", $CMD);
 	PZ(COLOR12, " (使用例)\n");
-	PZ(COLOR91, "   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $IWM_CMD);
+	PZ(COLOR91, "   %s \"2000/1/1\" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n", $CMD);
 	PZ(COLOR21, " [日付]\n");
 	PZ(COLOR91, NULL);
 	P2("   \"now\" \".\" (現在日時)");

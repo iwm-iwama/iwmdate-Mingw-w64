@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define  IWM_VERSION         "iwmdatediff_20210924"
+#define  IWM_VERSION         "iwmdatediff_20211111"
 #define  IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -47,19 +47,19 @@ INT
 main()
 {
 	// lib_iwmutil 初期化
-	iCLI_getARGV();      //=> $IWM_CMD, $IWM_ARGV, $IWM_ARGC
-	iConsole_getColor(); //=> $IWM_ColorDefault, $IWM_StdoutHandle
-	iExecSec_init();     //=> $IWM_ExecSecBgn
+	iCLI_getARGV();      //=> $CMD, $ARGV, $ARGC
+	iConsole_getColor(); //=> $ColorDefault, $StdoutHandle
+	iExecSec_init();     //=> $ExecSecBgn
 
 	// -h | -help
-	if(! $IWM_ARGC || imb_cmpp($IWM_ARGV[0], "-h") || imb_cmpp($IWM_ARGV[0], "-help"))
+	if(! $ARGC || iCLI_getOptMatch(0, "-h", "-help"))
 	{
 		print_help();
 		imain_end();
 	}
 
 	// -v | -version
-	if(imb_cmpp($IWM_ARGV[0], "-v") || imb_cmpp($IWM_ARGV[0], "-version"))
+	if(iCLI_getOptMatch(0, "-v", "-version"))
 	{
 		print_version();
 		imain_end();
@@ -74,58 +74,56 @@ main()
 		"cjd"     => 修正ユリウス開始時
 		"jd"      => ユリウス開始時
 	*/
-	if(imb_cmpp($IWM_ARGV[0], ".") || imb_cmpp($IWM_ARGV[0], "now"))
+	if(iCLI_getOptMatch(0, ".", "now"))
 	{
 		iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
 	}
-	else if(imb_cmpp($IWM_ARGV[0], "cjd"))
+	else if(iCLI_getOptMatch(0, "cjd", NULL))
 	{
 		iAryDtBgn = idate_MBS_to_iAryYmdhns(CJD);
 	}
-	else if(imb_cmpp($IWM_ARGV[0], "jd"))
+	else if(iCLI_getOptMatch(0, "jd", NULL))
 	{
 		iAryDtBgn = idate_MBS_to_iAryYmdhns(JD);
 	}
 	else
 	{
-		iAryDtBgn = idate_MBS_to_iAryYmdhns($IWM_ARGV[0]);
+		iAryDtBgn = idate_MBS_to_iAryYmdhns($ARGV[0]);
 	}
 
-	if(imb_cmpp($IWM_ARGV[1], ".") || imb_cmpp($IWM_ARGV[1], "now"))
+	if(iCLI_getOptMatch(1, ".", "now"))
 	{
 		iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
 	}
-	else if(imb_cmpp($IWM_ARGV[1], "cjd"))
+	else if(iCLI_getOptMatch(1, "cjd", NULL))
 	{
 		iAryDtEnd = idate_MBS_to_iAryYmdhns(CJD);
 	}
-	else if(imb_cmpp($IWM_ARGV[1], "jd"))
+	else if(iCLI_getOptMatch(1, "jd", NULL))
 	{
 		iAryDtEnd = idate_MBS_to_iAryYmdhns(JD);
 	}
 	else
 	{
-		iAryDtEnd = idate_MBS_to_iAryYmdhns($IWM_ARGV[1]);
+		iAryDtEnd = idate_MBS_to_iAryYmdhns($ARGV[1]);
 	}
 
-	// [2..]
-	for(INT _i1 = 2; _i1 < $IWM_ARGC; _i1++)
-	{
-		MBS **_as1 = ija_split($IWM_ARGV[_i1], "=");
+	MBS *p1 = 0;
 
+	// [2..]
+	for(INT _i1 = 2; _i1 < $ARGC; _i1++)
+	{
 		// -f | -format
-		if(imb_cmpp(_as1[0], "-f") || imb_cmpp(_as1[0], "-format"))
+		if((p1 = iCLI_getOptValue(_i1, "-f=", "-format=")))
 		{
-			_Format = ims_clone(_as1[1]);
+			_Format = ims_clone(p1);
 		}
 
 		// -N
-		if(imb_cmpp(_as1[0], "-N"))
+		if(iCLI_getOptMatch(_i1, "-N", NULL))
 		{
 			_NL = FALSE;
 		}
-
-		ifree(_as1);
 	}
 
 	// diff[8]
@@ -168,9 +166,9 @@ print_help()
 {
 	print_version();
 	PZ(COLOR01, " 日時差を計算 \n\n");
-	PZ(COLOR11, " %s [日付1] [日付2] [オプション] \n\n", $IWM_CMD);
+	PZ(COLOR11, " %s [日付1] [日付2] [オプション] \n\n", $CMD);
 	PZ(COLOR12, " (使用例)\n");
-	PZ(COLOR91, "   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $IWM_CMD);
+	PZ(COLOR91, "   %s \"now\" \"2000/01/01\" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $CMD);
 	PZ(COLOR21, " [日付1] [日付2]\n");
 	PZ(COLOR91, NULL);
 	P2("   \"now\" \".\" (現在日時)");
