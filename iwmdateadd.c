@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define  IWM_VERSION         "iwmdateadd_20211111"
+#define  IWM_VERSION         "iwmdateadd_20211129"
 #define  IWM_COPYRIGHT       "Copyright (C)2008-2021 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -143,7 +143,7 @@ main()
 		iAryDtAdd[0], iAryDtAdd[1], iAryDtAdd[2], iAryDtAdd[3], iAryDtAdd[4], iAryDtAdd[5]
 	);
 
-	P(
+	P0(
 		idate_format_ymdhns(
 			_Format,
 			iAryDt[0], iAryDt[1], iAryDt[2], iAryDt[3], iAryDt[4], iAryDt[5]
