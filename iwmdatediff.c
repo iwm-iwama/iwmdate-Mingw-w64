@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define  IWM_VERSION         "iwmdatediff_20220313"
+#define  IWM_VERSION         "iwmdatediff_20220320"
 #define  IWM_COPYRIGHT       "Copyright (C)2008-2022 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil.h"
@@ -44,8 +44,8 @@ INT
 main()
 {
 	// lib_iwmutil 初期化
-	iExecSec_init();  //=> $ExecSecBgn
-	iCLI_getARGV();   //=> $CMD, $ARGV, $ARGC
+	iExecSec_init();       //=> $ExecSecBgn
+	iCLI_getCommandLine(); //=> $CMD, $ARGC, $ARGV, $ARGS
 	iConsole_EscOn();
 
 	// -h | -help
@@ -85,7 +85,7 @@ main()
 	}
 	else
 	{
-		iAryDtBgn = idate_MBS_to_iAryYmdhns($ARGV[0]);
+		iAryDtBgn = idate_MBS_to_iAryYmdhns($ARGS[0]);
 	}
 
 	if(iCLI_getOptMatch(1, ".", "now"))
@@ -102,7 +102,7 @@ main()
 	}
 	else
 	{
-		iAryDtEnd = idate_MBS_to_iAryYmdhns($ARGV[1]);
+		iAryDtEnd = idate_MBS_to_iAryYmdhns($ARGS[1]);
 	}
 
 	MBS *p1 = 0;
@@ -163,25 +163,25 @@ print_help()
 {
 	print_version();
 	PRGB01();
-	P2("\033[48;2;80;80;250m 日時差を計算 \033[49m");
+	P2("\033[48;2;50;50;200m 日時差を計算 \033[49m");
 	NL();
 	PRGB02();
-	P ("\033[48;2;250;80;80m %s [Date1] [Date2] [Option] \033[49m\n\n", $CMD);
+	P ("\033[48;2;200;50;50m %s [Date1] [Date2] [Option] \033[49m\n\n", $CMD);
 	PRGB11();
 	P2(" (使用例)");
 	PRGB91();
-	P ("   %s \033[38;2;255;150;150m\"now\" \"2000/01/01\" \033[38;2;150;150;255m-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $CMD);
+	P ("   %s \033[38;2;255;150;150mnow \"2000/01/01\" \033[38;2;150;150;255m-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $CMD);
 	PRGB02();
-	P2("\033[48;2;250;80;80m [Date1] [Date2] \033[49m");
+	P2("\033[48;2;200;50;50m [Date1] [Date2] \033[49m");
 	PRGB91();
-	P2("   \"now\"  \".\"  (現在日時)");
-	P2("   \"cjd\"  (修正ユリウス開始日 -4712/01/01 00:00:00)");
-	P2("   \"jd\"   (ユリウス開始日     -4712/01/01 12:00:00)");
+	P2("   now  .  (現在日時)");
+	P2("   cjd     (修正ユリウス開始日 -4712/01/01 00:00:00)");
+	P2("   jd      (ユリウス開始日     -4712/01/01 12:00:00)");
 	P2("   \"+2000/01/01\"  \"+2000-01-01\"");
 	P2("   \"+2000/01/01 00:00:00\"  \"+2000-01-01 00:00:00\"");
 	NL();
 	PRGB02();
-	P2("\033[48;2;250;80;80m [Option] \033[49m");
+	P2("\033[48;2;200;50;50m [Option] \033[49m");
 	PRGB21();
 	P2("   -format=STR | -f=STR");
 	PRGB91();
