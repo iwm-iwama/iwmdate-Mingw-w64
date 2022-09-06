@@ -1,41 +1,41 @@
 //------------------------------------------------------------------------------
-#define  IWM_VERSION         "iwmdatediff_20220429"
+#define  IWM_VERSION         "iwmdatediff_20220904"
 #define  IWM_COPYRIGHT       "Copyright (C)2008-2022 iwm-iwama"
 //------------------------------------------------------------------------------
-#include "lib_iwmutil.h"
+#include "lib_iwmutil2.h"
 
 INT  main();
 VOID print_version();
 VOID print_help();
 
-// ƒŠƒZƒbƒg
-#define  PRGB00()            P0("\033[0m")
-// ƒ‰ƒxƒ‹
-#define  PRGB01()            P0("\033[38;2;255;255;0m")    // ‰©
-#define  PRGB02()            P0("\033[38;2;255;255;255m")  // ”’
-// “ü—Í—á^’
-#define  PRGB11()            P0("\033[38;2;255;255;100m")  // ‰©
-#define  PRGB12()            P0("\033[38;2;255;220;150m")  // žò
-#define  PRGB13()            P0("\033[38;2;100;100;255m")  // Â
-// ƒIƒvƒVƒ‡ƒ“
-#define  PRGB21()            P0("\033[38;2;80;255;255m")   // …
-#define  PRGB22()            P0("\033[38;2;255;100;255m")  // gŽ‡
-// –{•¶
-#define  PRGB91()            P0("\033[38;2;255;255;255m")  // ”’
-#define  PRGB92()            P0("\033[38;2;200;200;200m")  // ‹â
+// ãƒªã‚»ãƒƒãƒˆ
+#define  PRGB00()            P0("\x1b[0m")
+// ãƒ©ãƒ™ãƒ«
+#define  PRGB01()            P0("\x1b[38;2;255;255;0m")    // é»„
+#define  PRGB02()            P0("\x1b[38;2;255;255;255m")  // ç™½
+// å…¥åŠ›ä¾‹ï¼æ³¨
+#define  PRGB11()            P0("\x1b[38;2;255;255;100m")  // é»„
+#define  PRGB12()            P0("\x1b[38;2;255;220;150m")  // æ©™
+#define  PRGB13()            P0("\x1b[38;2;100;100;255m")  // é’
+// ã‚ªãƒ—ã‚·ãƒ§ãƒ³
+#define  PRGB21()            P0("\x1b[38;2;80;255;255m")   // æ°´
+#define  PRGB22()            P0("\x1b[38;2;255;100;255m")  // ç´…ç´«
+// æœ¬æ–‡
+#define  PRGB91()            P0("\x1b[38;2;255;255;255m")  // ç™½
+#define  PRGB92()            P0("\x1b[38;2;200;200;200m")  // éŠ€
 
-#define  DATE_FORMAT         "%g%y-%m-%d" // (’)%g•t‚¯‚È‚¢‚Æ‘S‚Ä³”•\Ž¦
+#define  DATE_FORMAT         L"%g%y-%m-%d" // (æ³¨)%gä»˜ã‘ãªã„ã¨å…¨ã¦æ­£æ•°è¡¨ç¤º
 
-#define  CJD                 "-4712-01-01 00:00:00"
-#define  JD                  "-4712-01-01 12:00:00"
+#define  CJD                 L"-4712-01-01 00:00:00"
+#define  JD                  L"-4712-01-01 12:00:00"
 
 /*
-	o—ÍƒtƒH[ƒ}ƒbƒg
+	å‡ºåŠ›ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 	-f=STR | -format=STR
 */
-MBS *_Format = DATE_FORMAT;
+WCS *_Format = DATE_FORMAT;
 /*
-	‰üs‚·‚é‚Æ‚« TRUE
+	æ”¹è¡Œã™ã‚‹ã¨ã TRUE
 	-N
 */
 BOOL _NL = TRUE;
@@ -43,81 +43,82 @@ BOOL _NL = TRUE;
 INT
 main()
 {
-	// lib_iwmutil ‰Šú‰»
-	iExecSec_init();       //=> $ExecSecBgn
-	iCLI_getCommandLine(); //=> $CMD, $ARGC, $ARGV, $ARGS
+	// lib_iwmutil åˆæœŸåŒ–
+	iExecSec_init();            //=> $ExecSecBgn
+	iCLI_getCommandLine(65001); //=> $CMD, $ARGC, $ARGV, $ARGS
 	iConsole_EscOn();
 
 	// -h | -help
-	if(! $ARGC || iCLI_getOptMatch(0, "-h", "-help"))
+	if(! $ARGC || iCLI_getOptMatch(0, L"-h", L"-help"))
 	{
 		print_help();
 		imain_end();
 	}
 
 	// -v | -version
-	if(iCLI_getOptMatch(0, "-v", "-version"))
+	if(iCLI_getOptMatch(0, L"-v", L"-version"))
 	{
 		print_version();
 		imain_end();
 	}
 
-	INT *iAryDtBgn = icalloc_INT(6); // y, m, d, h, n, s
-	INT *iAryDtEnd = icalloc_INT(6); // y, m, d, h, n, s
+	WCS *wp1 = 0;
+	U8N *up1 = 0;
+
+	INT *iAryDtBgn = { 0 };
+	INT *iAryDtEnd = { 0 };
 
 	// [0], [1]
 	/*
-		"." "now" => Œ»ÝŽž
-		"cjd"     => C³ƒ†ƒŠƒEƒXŠJŽnŽž
-		"jd"      => ƒ†ƒŠƒEƒXŠJŽnŽž
+		"." "now" => ç¾åœ¨æ™‚
+		"cjd"     => ä¿®æ­£ãƒ¦ãƒªã‚¦ã‚¹é–‹å§‹æ™‚
+		"jd"      => ãƒ¦ãƒªã‚¦ã‚¹é–‹å§‹æ™‚
 	*/
-	if(iCLI_getOptMatch(0, ".", "now"))
+	if(iCLI_getOptMatch(0, L".", L"now"))
 	{
 		iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
 	}
-	else if(iCLI_getOptMatch(0, "cjd", NULL))
+	else if(iCLI_getOptMatch(0, L"cjd", NULL))
 	{
-		iAryDtBgn = idate_MBS_to_iAryYmdhns(CJD);
+		iAryDtBgn = idate_WCS_to_iAryYmdhns(CJD);
 	}
-	else if(iCLI_getOptMatch(0, "jd", NULL))
+	else if(iCLI_getOptMatch(0, L"jd", NULL))
 	{
-		iAryDtBgn = idate_MBS_to_iAryYmdhns(JD);
+		iAryDtBgn = idate_WCS_to_iAryYmdhns(JD);
 	}
 	else
 	{
-		iAryDtBgn = idate_MBS_to_iAryYmdhns($ARGS[0]);
+		iAryDtBgn = idate_WCS_to_iAryYmdhns($ARGS[0]);
 	}
 
-	if(iCLI_getOptMatch(1, ".", "now"))
+	if(iCLI_getOptMatch(1, L".", L"now"))
 	{
 		iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
 	}
-	else if(iCLI_getOptMatch(1, "cjd", NULL))
+	else if(iCLI_getOptMatch(1, L"cjd", NULL))
 	{
-		iAryDtEnd = idate_MBS_to_iAryYmdhns(CJD);
+		iAryDtEnd = idate_WCS_to_iAryYmdhns(CJD);
 	}
-	else if(iCLI_getOptMatch(1, "jd", NULL))
+	else if(iCLI_getOptMatch(1, L"jd", NULL))
 	{
-		iAryDtEnd = idate_MBS_to_iAryYmdhns(JD);
+		iAryDtEnd = idate_WCS_to_iAryYmdhns(JD);
 	}
 	else
 	{
-		iAryDtEnd = idate_MBS_to_iAryYmdhns($ARGS[1]);
+		iAryDtEnd = idate_WCS_to_iAryYmdhns($ARGS[1]);
 	}
-
-	MBS *p1 = 0;
 
 	// [2..]
 	for(INT _i1 = 2; _i1 < $ARGC; _i1++)
 	{
 		// -f | -format
-		if((p1 = iCLI_getOptValue(_i1, "-f=", "-format=")))
+		if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
 		{
-			_Format = ims_clone(p1);
+			_Format = iws_clone(wp1);
 		}
 
 		// -N
-		if(iCLI_getOptMatch(_i1, "-N", NULL))
+		if(iCLI_getOptMatch(_i1, L"-N", NULL))
 		{
 			_NL = FALSE;
 		}
@@ -129,12 +130,11 @@ main()
 		iAryDtEnd[0], iAryDtEnd[1], iAryDtEnd[2], iAryDtEnd[3], iAryDtEnd[4], iAryDtEnd[5]
 	);
 
-	P0(
-		idate_format_diff(
-			_Format,
-			iAryDiff[0], iAryDiff[1], iAryDiff[2], iAryDiff[3], iAryDiff[4], iAryDiff[5], iAryDiff[6], iAryDiff[7]
-		)
-	);
+	wp1 = idate_format_diff(_Format, iAryDiff[0], iAryDiff[1], iAryDiff[2], iAryDiff[3], iAryDiff[4], iAryDiff[5], iAryDiff[6], iAryDiff[7]);
+	up1 = W2U(wp1);
+		P0(up1);
+	ifree(up1);
+	ifree(wp1);
 
 	if(_NL)
 	{
@@ -161,61 +161,67 @@ print_version()
 VOID
 print_help()
 {
+	U8N *_cmd = W2U($CMD);
+	U8N *_format = W2U(DATE_FORMAT);
+
 	print_version();
 	PRGB01();
-	P2("\033[48;2;50;50;200m “úŽž·‚ðŒvŽZ \033[0m");
+	P2("\x1b[48;2;50;50;200m æ—¥æ™‚å·®ã‚’è¨ˆç®— \x1b[0m");
 	NL();
 	PRGB02();
-	P ("\033[48;2;200;50;50m %s [Date1] [Date2] [Option] \033[0m\n\n", $CMD);
+	P ("\x1b[48;2;200;50;50m %s [Date1] [Date2] [Option] \x1b[0m\n\n", _cmd);
 	PRGB11();
-	P2(" (Žg—p—á)");
+	P2(" (ä½¿ç”¨ä¾‹)");
 	PRGB91();
-	P ("   %s \033[38;2;255;150;150mnow \"2000/01/01\" \033[38;2;150;150;255m-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", $CMD);
+	P ("   %s \x1b[38;2;255;150;150mnow \"2000/01/01\" \x1b[38;2;150;150;255m-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", _cmd);
 	PRGB02();
-	P2("\033[48;2;200;50;50m [Date1] [Date2] \033[0m");
+	P2("\x1b[48;2;200;50;50m [Date1] [Date2] \x1b[0m");
 	PRGB91();
-	P2("   now  .  (Œ»Ý“úŽž)");
-	P2("   cjd     (C³ƒ†ƒŠƒEƒXŠJŽn“ú -4712/01/01 00:00:00)");
-	P2("   jd      (ƒ†ƒŠƒEƒXŠJŽn“ú     -4712/01/01 12:00:00)");
+	P2("   now  .  (ç¾åœ¨æ—¥æ™‚)");
+	P2("   cjd     (ä¿®æ­£ãƒ¦ãƒªã‚¦ã‚¹é–‹å§‹æ—¥ -4712/01/01 00:00:00)");
+	P2("   jd      (ãƒ¦ãƒªã‚¦ã‚¹é–‹å§‹æ—¥     -4712/01/01 12:00:00)");
 	P2("   \"+2000/01/01\"  \"+2000-01-01\"");
 	P2("   \"+2000/01/01 00:00:00\"  \"+2000-01-01 00:00:00\"");
 	NL();
 	PRGB02();
-	P2("\033[48;2;200;50;50m [Option] \033[0m");
+	P2("\x1b[48;2;200;50;50m [Option] \x1b[0m");
 	PRGB21();
 	P2("   -format=STR | -f=STR");
 	PRGB91();
-	P ("       ¦STR‚ª–³Žw’è‚Ì‚Æ‚« \"%s\"\n", DATE_FORMAT);
-	P2("       %gF+/-•\\Ž¦");
-	P2("       %yF”N  %mFŒŽ  %dF“ú  %hFŽž  %nF•ª  %sF•b");
-	P2("       ’ÊŽZ  %YF”N  %MFŒŽ  %DF“ú");
-	P2("             %HFŽž  %NF•ª  %SF•b");
-	P2("             %WFT  %wFT—]“ú");
-	P2("       \\tFƒ^ƒu  \\nF‰üs");
+	P ("       â€»STRãŒç„¡æŒ‡å®šã®ã¨ã \"%s\"\n", _format);
+	P2("       %gï¼š+/-è¡¨ç¤º");
+	P2("       %yï¼šå¹´  %mï¼šæœˆ  %dï¼šæ—¥  %hï¼šæ™‚  %nï¼šåˆ†  %sï¼šç§’");
+	P2("       é€šç®—  %Yï¼šå¹´  %Mï¼šæœˆ  %Dï¼šæ—¥");
+	P2("             %Hï¼šæ™‚  %Nï¼šåˆ†  %Sï¼šç§’");
+	P2("             %Wï¼šé€±  %wï¼šé€±ä½™æ—¥");
+	P2("       \\tï¼šã‚¿ãƒ–  \\nï¼šæ”¹è¡Œ");
 	PRGB21();
 	P2("   -N");
 	PRGB91();
-	P2("       ‰üs‚µ‚È‚¢");
+	P2("       æ”¹è¡Œã—ãªã„");
 	NL();
 	PRGB11();
-	P2(" (”õl)");
+	P2(" (å‚™è€ƒ)");
 	PRGB91();
-	P2("   Eƒ†ƒŠƒEƒX—ï i-4712/01/01`1582/10/04j");
-	P2("   EƒOƒŒƒSƒŠƒI—ïi1582/10/15`9999/12/31j");
+	P2("   ãƒ»ãƒ¦ãƒªã‚¦ã‚¹æš¦ ï¼ˆ-4712/01/01ï½ž1582/10/04ï¼‰");
+	P2("   ãƒ»ã‚°ãƒ¬ã‚´ãƒªã‚ªæš¦ï¼ˆ1582/10/15ï½ž9999/12/31ï¼‰");
 	PRGB12();
-	P0("    (’‚P) ");
+	P0("    (æ³¨ï¼‘) ");
 	PRGB91();
-	P2("‹ó”’—ï 1582/10/5`1582/10/14 ‚ÍA\"1582/10/4\" ‚Æ‚µ‚ÄŽæˆµ‚¤B");
+	P2("ç©ºç™½æš¦ 1582/10/5ï½ž1582/10/14 ã¯ã€\"1582/10/4\" ã¨ã—ã¦å–æ‰±ã†ã€‚");
 	PRGB12();
-	P0("    (’‚Q) ");
+	P0("    (æ³¨ï¼’) ");
 	PRGB91();
-	P2("BC—ï‚ÍA\"-1/1/1\" ‚ð \"0/1/1\" ‚Æ‚µ‚ÄŽæˆµ‚¤B");
+	P2("BCæš¦ã¯ã€\"-1/1/1\" ã‚’ \"0/1/1\" ã¨ã—ã¦å–æ‰±ã†ã€‚");
 	PRGB12();
-	P0("    (’‚R) ");
+	P0("    (æ³¨ï¼“) ");
 	PRGB91();
-	P2("ƒvƒƒOƒ‰ƒ€ã‚ÍAC³ƒ†ƒŠƒEƒX—ï‚ðŽg—pB");
+	P2("ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¸Šã¯ã€ä¿®æ­£ãƒ¦ãƒªã‚¦ã‚¹æš¦ã‚’ä½¿ç”¨ã€‚");
 	NL();
 	PRGB92();
 	LN();
 	PRGB00();
+
+	ifree(_format);
+	ifree(_cmd);
 }
