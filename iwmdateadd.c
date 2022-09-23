@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define  IWM_VERSION         "iwmdateadd_20220912"
-#define  IWM_COPYRIGHT       "Copyright (C)2008-2022 iwm-iwama"
+#define   IWM_VERSION         "iwmdateadd_20220922"
+#define   IWM_COPYRIGHT       "Copyright (C)2008-2022 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -9,32 +9,29 @@ VOID print_version();
 VOID print_help();
 
 // リセット
-#define  PRGB00()            P0("\033[0m")
+#define   PRGB00()            P1("\033[0m")
 // ラベル
-#define  PRGB01()            P0("\033[38;2;255;255;0m")    // 黄
-#define  PRGB02()            P0("\033[38;2;255;255;255m")  // 白
+#define   PRGB01()            P1("\033[38;2;255;255;0m")    // 黄
+#define   PRGB02()            P1("\033[38;2;255;255;255m")  // 白
 // 入力例／注
-#define  PRGB11()            P0("\033[38;2;255;255;100m")  // 黄
-#define  PRGB12()            P0("\033[38;2;255;220;150m")  // 橙
-#define  PRGB13()            P0("\033[38;2;100;100;255m")  // 青
+#define   PRGB11()            P1("\033[38;2;255;255;100m")  // 黄
+#define   PRGB12()            P1("\033[38;2;255;220;150m")  // 橙
+#define   PRGB13()            P1("\033[38;2;100;100;255m")  // 青
 // オプション
-#define  PRGB21()            P0("\033[38;2;80;255;255m")   // 水
-#define  PRGB22()            P0("\033[38;2;255;100;255m")  // 紅紫
+#define   PRGB21()            P1("\033[38;2;80;255;255m")   // 水
+#define   PRGB22()            P1("\033[38;2;255;100;255m")  // 紅紫
 // 本文
-#define  PRGB91()            P0("\033[38;2;255;255;255m")  // 白
-#define  PRGB92()            P0("\033[38;2;200;200;200m")  // 銀
+#define   PRGB91()            P1("\033[38;2;255;255;255m")  // 白
+#define   PRGB92()            P1("\033[38;2;200;200;200m")  // 銀
 
-#define  DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
+#define   DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
-/*
-	出力フォーマット
-	-f=STR | -format=STR
-*/
+// 出力フォーマット
+//   -f=STR | -format=STR
 WCS *_Format = DATE_FORMAT;
-/*
-	改行するとき TRUE
-	-N
-*/
+
+// 改行するとき TRUE
+//   -N
 BOOL _NL = TRUE;
 
 INT
@@ -46,35 +43,37 @@ main()
 	iConsole_EscOn();
 
 	// -h | -help
-	if(! $ARGC || iCLI_getOptMatch(0, L"-h", L"-help"))
+	if(! $ARGC || iCLI_getOptMatch(0, L"-h", L"--help"))
 	{
 		print_help();
 		imain_end();
 	}
 
 	// -v | -version
-	if(iCLI_getOptMatch(0, L"-v", L"-version"))
+	if(iCLI_getOptMatch(0, L"-v", L"--version"))
 	{
 		print_version();
 		imain_end();
 	}
 
 	WCS *wp1 = 0;
-	U8N *up1 = 0;
 
 	INT *iAryDt = { 0 };
 
 	// [0]
-	/*
-		"." "now" => 現在時
-	*/
+	//   "." "now" => 現在時
 	if(iCLI_getOptMatch(0, L".", L"now"))
 	{
 		iAryDt = idate_now_to_iAryYmdhns_localtime();
 	}
-	else
+	else if(idate_chk_ymdhnsW($ARGS[0]))
 	{
 		iAryDt = idate_WCS_to_iAryYmdhns($ARGS[0]);
+	}
+	else
+	{
+		P2("[Err] １番目の引数が日付フォーマットでない。");
+		imain_end();
 	}
 
 	INT *iAryDtAdd = icalloc_INT(6); // ±y, ±m, ±d, ±h, ±n, ±s
@@ -85,49 +84,49 @@ main()
 		// -y
 		if((wp1 = iCLI_getOptValue(_i1, L"-y=", NULL)))
 		{
-			iAryDtAdd[0] += inum_wtoi(wp1);
+			iAryDtAdd[0] += _wtoi(wp1);
 		}
 
 		// -m
 		if((wp1 = iCLI_getOptValue(_i1, L"-m=", NULL)))
 		{
-			iAryDtAdd[1] += inum_wtoi(wp1);
+			iAryDtAdd[1] += _wtoi(wp1);
 		}
 
 		// -d
 		if((wp1 = iCLI_getOptValue(_i1, L"-d=", NULL)))
 		{
-			iAryDtAdd[2] += inum_wtoi(wp1);
+			iAryDtAdd[2] += _wtoi(wp1);
 		}
 
 		// -w
 		if((wp1 = iCLI_getOptValue(_i1, L"-w=", NULL)))
 		{
-			iAryDtAdd[2] += inum_wtoi(wp1) * 7;
+			iAryDtAdd[2] += _wtoi(wp1) * 7;
 		}
 
 		// -h
 		if((wp1 = iCLI_getOptValue(_i1, L"-h=", NULL)))
 		{
-			iAryDtAdd[3] += inum_wtoi(wp1);
+			iAryDtAdd[3] += _wtoi(wp1);
 		}
 
 		// -n
 		if((wp1 = iCLI_getOptValue(_i1, L"-n=", NULL)))
 		{
-			iAryDtAdd[4] += inum_wtoi(wp1);
+			iAryDtAdd[4] += _wtoi(wp1);
 		}
 
 		// -s
 		if((wp1 = iCLI_getOptValue(_i1, L"-s=", NULL)))
 		{
-			iAryDtAdd[5] += inum_wtoi(wp1);
+			iAryDtAdd[5] += _wtoi(wp1);
 		}
 
 		// -f | -format
 		if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
 		{
-			_Format = iws_clone(wp1);
+			_Format = wp1;
 		}
 
 		// -N
@@ -143,9 +142,7 @@ main()
 	);
 
 	wp1 = idate_format_ymdhns(_Format, iAryDt2[0], iAryDt2[1], iAryDt2[2], iAryDt2[3], iAryDt2[4], iAryDt2[5]);
-	up1 = W2U(wp1);
-		P0(up1);
-	ifree(up1);
+		P1W(wp1);
 	ifree(wp1);
 
 	if(_NL)
@@ -173,8 +170,8 @@ print_version()
 VOID
 print_help()
 {
-	U8N *_cmd = W2U($CMD);
-	U8N *_format = W2U(DATE_FORMAT);
+	MBS *_cmd = W2U($CMD);
+	MBS *_format = W2U(DATE_FORMAT);
 
 	print_version();
 	PRGB01();
@@ -222,15 +219,15 @@ print_help()
 	P2("   ・ユリウス暦 （-4712/01/01～1582/10/04）");
 	P2("   ・グレゴリオ暦（1582/10/15～9999/12/31）");
 	PRGB12();
-	P0("    (注１) ");
+	P1("    (注１) ");
 	PRGB91();
 	P2("空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。");
 	PRGB12();
-	P0("    (注２) ");
+	P1("    (注２) ");
 	PRGB91();
 	P2("BC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。");
 	PRGB12();
-	P0("    (注３) ");
+	P1("    (注３) ");
 	PRGB91();
 	P2("プログラム上は、修正ユリウス暦を使用。");
 	NL();
