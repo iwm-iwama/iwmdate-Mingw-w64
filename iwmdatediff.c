@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20220922"
+#define   IWM_VERSION         "iwmdatediff_20221110"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2022 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
@@ -42,7 +42,7 @@ main()
 {
 	// lib_iwmutil 初期化
 	iExecSec_init();       //=> $ExecSecBgn
-	iCLI_getCommandLine(); //=> $CMD, $ARGC, $ARGV, $ARGS
+	iCLI_getCommandLine(); //=> $CMD, $ARGC, $ARGV
 	iConsole_EscOn();
 
 	// -h | -help
@@ -80,9 +80,9 @@ main()
 	{
 		iAryDtBgn = idate_WCS_to_iAryYmdhns(JD);
 	}
-	else if(idate_chk_ymdhnsW($ARGS[0]))
+	else if(idate_chk_ymdhnsW($ARGV[0]))
 	{
-		iAryDtBgn = idate_WCS_to_iAryYmdhns($ARGS[0]);
+		iAryDtBgn = idate_WCS_to_iAryYmdhns($ARGV[0]);
 	}
 	else
 	{
@@ -102,9 +102,9 @@ main()
 	{
 		iAryDtEnd = idate_WCS_to_iAryYmdhns(JD);
 	}
-	else if(idate_chk_ymdhnsW($ARGS[1]))
+	else if(idate_chk_ymdhnsW($ARGV[1]))
 	{
-		iAryDtEnd = idate_WCS_to_iAryYmdhns($ARGS[1]);
+		iAryDtEnd = idate_WCS_to_iAryYmdhns($ARGV[1]);
 	}
 	else
 	{
