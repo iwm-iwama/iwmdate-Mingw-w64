@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20221110"
-#define   IWM_COPYRIGHT       "Copyright (C)2008-2022 iwm-iwama"
+#define   IWM_VERSION         "iwmdatediff_20230311"
+#define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -8,21 +8,16 @@ INT  main();
 VOID print_version();
 VOID print_help();
 
-// リセット
-#define   PRGB00()            P1("\033[0m")
-// ラベル
-#define   PRGB01()            P1("\033[38;2;255;255;0m")    // 黄
-#define   PRGB02()            P1("\033[38;2;255;255;255m")  // 白
-// 入力例／注
-#define   PRGB11()            P1("\033[38;2;255;255;100m")  // 黄
-#define   PRGB12()            P1("\033[38;2;255;220;150m")  // 橙
-#define   PRGB13()            P1("\033[38;2;100;100;255m")  // 青
-// オプション
-#define   PRGB21()            P1("\033[38;2;80;255;255m")   // 水
-#define   PRGB22()            P1("\033[38;2;255;100;255m")  // 紅紫
-// 本文
-#define   PRGB91()            P1("\033[38;2;255;255;255m")  // 白
-#define   PRGB92()            P1("\033[38;2;200;200;200m")  // 銀
+#define   CLR_RESET           "\033[0m"
+#define   CLR_TITLE1          "\033[38;2;250;250;250m\033[104m" // 白／青
+#define   CLR_OPT1            "\033[38;2;250;150;150m"          // 赤
+#define   CLR_OPT2            "\033[38;2;150;150;250m"          // 青
+#define   CLR_OPT21           "\033[38;2;80;250;250m"           // 水
+#define   CLR_OPT22           "\033[38;2;250;100;250m"          // 紅紫
+#define   CLR_LBL1            "\033[38;2;250;250;100m"          // 黄
+#define   CLR_LBL2            "\033[38;2;100;100;250m"          // 青
+#define   CLR_STR1            "\033[38;2;225;225;225m"          // 白
+#define   CLR_STR2            "\033[38;2;175;175;175m"          // 銀
 
 #define   DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
@@ -152,12 +147,12 @@ main()
 VOID
 print_version()
 {
-	PRGB92();
+	P(CLR_STR2);
 	LN();
-	P (" %s\n", IWM_COPYRIGHT);
-	P ("   Ver.%s+%s\n", IWM_VERSION, LIB_IWMUTIL_VERSION);
+	P(" %s\n", IWM_COPYRIGHT);
+	P("    Ver.%s+%s\n", IWM_VERSION, LIB_IWMUTIL_VERSION);
 	LN();
-	PRGB00();
+	P(CLR_RESET);
 }
 
 VOID
@@ -167,62 +162,41 @@ print_help()
 	MBS *_format = W2U(DATE_FORMAT);
 
 	print_version();
-	PRGB01();
-	P2("\033[48;2;50;50;200m 日時差を計算 \033[0m");
-	NL();
-	PRGB02();
-	P ("\033[48;2;200;50;50m %s [Date1] [Date2] [Option] \033[0m\n\n", _cmd);
-	PRGB11();
-	P2(" (使用例)");
-	PRGB91();
-	P ("   %s \033[38;2;255;150;150mnow \"2000/01/01\" \033[38;2;150;150;255m-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n", _cmd);
-	PRGB02();
-	P2("\033[48;2;200;50;50m [Date1] [Date2] \033[0m");
-	PRGB91();
-	P2("   now  .  (現在日時)");
-	P2("   cjd     (修正ユリウス開始日 -4712/01/01 00:00:00)");
-	P2("   jd      (ユリウス開始日     -4712/01/01 12:00:00)");
-	P2("   \"+2000/01/01\"  \"+2000-01-01\"");
-	P2("   \"+2000/01/01 00:00:00\"  \"+2000-01-01 00:00:00\"");
-	NL();
-	PRGB02();
-	P2("\033[48;2;200;50;50m [Option] \033[0m");
-	PRGB21();
-	P2("   -format=STR | -f=STR");
-	PRGB91();
-	P ("       ※STRが無指定のとき \"%s\"\n", _format);
-	P2("       %g：+/-表示");
-	P2("       %y：年  %m：月  %d：日  %h：時  %n：分  %s：秒");
-	P2("       通算  %Y：年  %M：月  %D：日");
-	P2("             %H：時  %N：分  %S：秒");
-	P2("             %W：週  %w：週余日");
-	P2("       \\t：タブ  \\n：改行");
-	PRGB21();
-	P2("   -N");
-	PRGB91();
-	P2("       改行しない");
-	NL();
-	PRGB11();
-	P2(" (備考)");
-	PRGB91();
-	P2("   ・ユリウス暦 （-4712/01/01～1582/10/04）");
-	P2("   ・グレゴリオ暦（1582/10/15～9999/12/31）");
-	PRGB12();
-	P1("    (注１) ");
-	PRGB91();
-	P2("空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。");
-	PRGB12();
-	P1("    (注２) ");
-	PRGB91();
-	P2("BC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。");
-	PRGB12();
-	P1("    (注３) ");
-	PRGB91();
-	P2("プログラム上は、修正ユリウス暦を使用。");
-	NL();
-	PRGB92();
+	P("%s 日時差を計算 %s\n", CLR_TITLE1, CLR_RESET);
+	P("%s    %s %s[Date] %s[Option]\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);
+	P("\n");
+	P("%s (例)\n", CLR_LBL1);
+	P("%s    %s %s now \"2000/01/01\" %s-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);
+	P("\n");
+	P("%s [Date1] [Date2]\n", CLR_OPT1);
+	P("%s    now  .  (現在日時)\n", CLR_STR1);
+	P("%s    cjd     (修正ユリウス開始日 -4712/01/01 00:00:00)\n", CLR_STR1);
+	P("%s    jd      (ユリウス開始日     -4712/01/01 12:00:00)\n", CLR_STR1);
+	P("%s    \"+2000/01/01"  "+2000-01-01\"\n", CLR_STR1);
+	P("%s    \"+2000/01/01 00:00:00"  "+2000-01-01 00:00:00\"\n", CLR_STR1);
+	P("\n");
+	P("%s [Option]\n", CLR_OPT2);
+	P("%s    -format=STR | -f=STR\n", CLR_OPT21);
+	P("%s        ※STRが無指定のとき \"%s\"\n", CLR_STR1, _format);
+	P("%s        %%g：+/-表示\n", CLR_STR1);
+	P("%s        %%y：年  %%m：月  %%d：日  %%h：時  %%n：分  %%s：秒\n", CLR_STR1);
+	P("%s        通算  %%Y：年  %%M：月  %%D：日\n", CLR_STR1);
+	P("%s              %%H：時  %%N：分  %%S：秒\n", CLR_STR1);
+	P("%s              %%W：週  %%w：週余日\n", CLR_STR1);
+	P("%s        \\t：タブ  \\n：改行\n", CLR_STR1);
+	P("%s    -N\n", CLR_OPT21);
+	P("%s        改行しない\n", CLR_STR1);
+	P("\n");
+	P("%s (備考)\n", CLR_LBL1);
+	P("%s    ・ユリウス暦 （-4712/01/01～1582/10/04）\n", CLR_STR1);
+	P("%s    ・グレゴリオ暦（1582/10/15～9999/12/31）\n", CLR_STR1);
+	P("%s      (注１) %s空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。\n", CLR_OPT22, CLR_STR1);
+	P("%s      (注２) %sBC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。\n", CLR_OPT22, CLR_STR1);
+	P("%s      (注３) %sプログラム上は、修正ユリウス暦を使用。\n", CLR_OPT22, CLR_STR1);
+	P("\n");
+	P(CLR_STR2);
 	LN();
-	PRGB00();
+	P(CLR_RESET);
 
 	ifree(_format);
 	ifree(_cmd);
