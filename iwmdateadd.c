@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20230311"
+#define   IWM_VERSION         "iwmdateadd_20230412"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
@@ -18,6 +18,7 @@ VOID print_help();
 #define   CLR_LBL2            "\033[38;2;100;100;250m"          // 青
 #define   CLR_STR1            "\033[38;2;225;225;225m"          // 白
 #define   CLR_STR2            "\033[38;2;175;175;175m"          // 銀
+#define   CLR_ERR1            "\033[38;2;200;0;0m"              // 紅
 
 #define   DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
@@ -54,81 +55,86 @@ main()
 	WCS *wp1 = 0;
 
 	INT *iAryDt = { 0 };
-
-	// [0]
-	//   "." "now" => 現在時
-	if(iCLI_getOptMatch(0, L".", L"now"))
-	{
-		iAryDt = idate_now_to_iAryYmdhns_localtime();
-	}
-	else if(idate_chk_ymdhnsW($ARGV[0]))
-	{
-		iAryDt = idate_WCS_to_iAryYmdhns($ARGV[0]);
-	}
-	else
-	{
-		P2("[Err] １番目の引数が日付フォーマットでない。");
-		imain_end();
-	}
-
 	INT *iAryDtAdd = icalloc_INT(6); // ±y, ±m, ±d, ±h, ±n, ±s
 
-	// [1..]
-	for(INT _i1 = 1; _i1 < $ARGC; _i1++)
+	// 代入されたらロック
+	BOOL bAryDtLock = FALSE;
+
+	// Main Loop
+	for(INT _i1 = 0; _i1 < $ARGC; _i1++)
 	{
 		// -y
 		if((wp1 = iCLI_getOptValue(_i1, L"-y=", NULL)))
 		{
 			iAryDtAdd[0] += _wtoi(wp1);
 		}
-
 		// -m
-		if((wp1 = iCLI_getOptValue(_i1, L"-m=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-m=", NULL)))
 		{
 			iAryDtAdd[1] += _wtoi(wp1);
 		}
-
 		// -d
-		if((wp1 = iCLI_getOptValue(_i1, L"-d=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-d=", NULL)))
 		{
 			iAryDtAdd[2] += _wtoi(wp1);
 		}
-
 		// -w
-		if((wp1 = iCLI_getOptValue(_i1, L"-w=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-w=", NULL)))
 		{
 			iAryDtAdd[2] += _wtoi(wp1) * 7;
 		}
-
 		// -h
-		if((wp1 = iCLI_getOptValue(_i1, L"-h=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-h=", NULL)))
 		{
 			iAryDtAdd[3] += _wtoi(wp1);
 		}
-
 		// -n
-		if((wp1 = iCLI_getOptValue(_i1, L"-n=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-n=", NULL)))
 		{
 			iAryDtAdd[4] += _wtoi(wp1);
 		}
-
 		// -s
-		if((wp1 = iCLI_getOptValue(_i1, L"-s=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-s=", NULL)))
 		{
 			iAryDtAdd[5] += _wtoi(wp1);
 		}
-
 		// -f | -format
-		if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
+		else if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
 		{
 			_Format = wp1;
 		}
-
 		// -N
-		if(iCLI_getOptMatch(_i1, L"-N", NULL))
+		else if(iCLI_getOptMatch(_i1, L"-N", NULL))
 		{
 			_NL = FALSE;
 		}
+		// -1/1/1 など
+		else
+		{
+			if(! bAryDtLock)
+			{
+				if(iCLI_getOptMatch(_i1, L".", L"now"))
+				{
+					bAryDtLock = TRUE;
+					iAryDt = idate_now_to_iAryYmdhns_localtime();
+				}
+				else if(idate_chk_ymdhnsW($ARGV[_i1]))
+				{
+					bAryDtLock = TRUE;
+					iAryDt = idate_WCS_to_iAryYmdhns($ARGV[_i1]);
+				}
+			}
+		}
+	}
+
+	// Err
+	if(! bAryDtLock)
+	{
+		P(CLR_ERR1);
+		P1W(L"[Err] 引数 Date を入力してください!");
+		P(CLR_RESET);
+		NL();
+		imain_end();
 	}
 
 	INT *iAryDt2 = idate_add(
@@ -171,6 +177,8 @@ print_help()
 	print_version();
 	P("%s 日時の前後を計算 %s\n", CLR_TITLE1, CLR_RESET);
 	P("%s    %s %s[Date] %s[Option]\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);
+	P("%s        or\n", CLR_LBL1);
+	P("%s    %s %s[Option] %s[Date]\n", CLR_STR1, _cmd, CLR_OPT2, CLR_OPT1);
 	P("\n");
 	P("%s (例)\n", CLR_LBL1);
 	P("%s    %s %s\"2000/1/1\" %s-y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);

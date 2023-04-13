@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20230311"
+#define   IWM_VERSION         "iwmdatediff_20230412"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
@@ -18,6 +18,7 @@ VOID print_help();
 #define   CLR_LBL2            "\033[38;2;100;100;250m"          // 青
 #define   CLR_STR1            "\033[38;2;225;225;225m"          // 白
 #define   CLR_STR2            "\033[38;2;175;175;175m"          // 銀
+#define   CLR_ERR1            "\033[38;2;200;0;0m"              // 紅
 
 #define   DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
@@ -41,7 +42,7 @@ main()
 	iConsole_EscOn();
 
 	// -h | -help
-	if(! $ARGC || iCLI_getOptMatch(0, L"-h", L"--help"))
+	if($ARGC < 2 || iCLI_getOptMatch(0, L"-h", L"--help"))
 	{
 		print_help();
 		imain_end();
@@ -59,68 +60,90 @@ main()
 	INT *iAryDtBgn = { 0 };
 	INT *iAryDtEnd = { 0 };
 
-	// [0], [1]
-	//   "." "now" => 現在時
-	//   "cjd"     => 修正ユリウス開始時
-	//   "jd"      => ユリウス開始時
-	if(iCLI_getOptMatch(0, L".", L"now"))
-	{
-		iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
-	}
-	else if(iCLI_getOptMatch(0, L"cjd", NULL))
-	{
-		iAryDtBgn = idate_WCS_to_iAryYmdhns(CJD);
-	}
-	else if(iCLI_getOptMatch(0, L"jd", NULL))
-	{
-		iAryDtBgn = idate_WCS_to_iAryYmdhns(JD);
-	}
-	else if(idate_chk_ymdhnsW($ARGV[0]))
-	{
-		iAryDtBgn = idate_WCS_to_iAryYmdhns($ARGV[0]);
-	}
-	else
-	{
-		P2("[Err] １番目の引数が日付フォーマットでない。");
-		imain_end();
-	}
+	// 代入されたらロック
+	BOOL bAryDtBgnLock = FALSE;
+	BOOL bAryDtEndLock = FALSE;
 
-	if(iCLI_getOptMatch(1, L".", L"now"))
-	{
-		iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
-	}
-	else if(iCLI_getOptMatch(1, L"cjd", NULL))
-	{
-		iAryDtEnd = idate_WCS_to_iAryYmdhns(CJD);
-	}
-	else if(iCLI_getOptMatch(1, L"jd", NULL))
-	{
-		iAryDtEnd = idate_WCS_to_iAryYmdhns(JD);
-	}
-	else if(idate_chk_ymdhnsW($ARGV[1]))
-	{
-		iAryDtEnd = idate_WCS_to_iAryYmdhns($ARGV[1]);
-	}
-	else
-	{
-		P2("[Err] ２番目の引数が日付フォーマットでない。");
-		imain_end();
-	}
-
-	// [2..]
-	for(INT _i1 = 2; _i1 < $ARGC; _i1++)
+	// Main Loop
+	for(INT _i1 = 0; _i1 < $ARGC; _i1++)
 	{
 		// -f | -format
 		if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
 		{
 			_Format = wp1;
 		}
-
 		// -N
-		if(iCLI_getOptMatch(_i1, L"-N", NULL))
+		else if(iCLI_getOptMatch(_i1, L"-N", NULL))
 		{
 			_NL = FALSE;
 		}
+		// -1/1/1 など
+		else
+		{
+			/*
+				連続する日付 [date1] [date2] のみ有効
+				位置は [0..1] or [$ARGC-2..$ARGC-1]
+					"." "now" => 現在時
+					"cjd"     => 修正ユリウス開始時
+					"jd"      => ユリウス開始時
+			*/
+			if(! bAryDtBgnLock)
+			{
+				if(iCLI_getOptMatch(_i1, L".", L"now"))
+				{
+					bAryDtBgnLock = TRUE;
+					iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
+				}
+				else if(iCLI_getOptMatch(_i1, L"cjd", NULL))
+				{
+					bAryDtBgnLock = TRUE;
+					iAryDtBgn = idate_WCS_to_iAryYmdhns(CJD);
+				}
+				else if(iCLI_getOptMatch(_i1, L"jd", NULL))
+				{
+					bAryDtBgnLock = TRUE;
+					iAryDtBgn = idate_WCS_to_iAryYmdhns(JD);
+				}
+				else if(idate_chk_ymdhnsW($ARGV[_i1]))
+				{
+					bAryDtBgnLock = TRUE;
+					iAryDtBgn = idate_WCS_to_iAryYmdhns($ARGV[_i1]);
+				}
+			}
+			else if(! bAryDtEndLock)
+			{
+				if(iCLI_getOptMatch((_i1), L".", L"now"))
+				{
+					bAryDtEndLock = TRUE;
+					iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
+				}
+				else if(iCLI_getOptMatch((_i1), L"cjd", NULL))
+				{
+					bAryDtEndLock = TRUE;
+					iAryDtEnd = idate_WCS_to_iAryYmdhns(CJD);
+				}
+				else if(iCLI_getOptMatch((_i1), L"jd", NULL))
+				{
+					bAryDtEndLock = TRUE;
+					iAryDtEnd = idate_WCS_to_iAryYmdhns(JD);
+				}
+				else if(idate_chk_ymdhnsW($ARGV[(_i1)]))
+				{
+					bAryDtEndLock = TRUE;
+					iAryDtEnd = idate_WCS_to_iAryYmdhns($ARGV[(_i1)]);
+				}
+			}
+		}
+	}
+
+	// Err
+	if(! bAryDtBgnLock || ! bAryDtEndLock)
+	{
+		P(CLR_ERR1);
+		P1W(L"[Err] 引数 Date1, Date2 を入力してください!");
+		P(CLR_RESET);
+		NL();
+		imain_end();
 	}
 
 	// diff[8]
@@ -163,7 +186,9 @@ print_help()
 
 	print_version();
 	P("%s 日時差を計算 %s\n", CLR_TITLE1, CLR_RESET);
-	P("%s    %s %s[Date] %s[Option]\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);
+	P("%s    %s %s[Date1] [Date2] %s[Option]\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);
+	P("%s        or\n", CLR_LBL1);
+	P("%s    %s %s[Option] %s[Date1] [Date2]\n", CLR_STR1, _cmd, CLR_OPT2, CLR_OPT1);
 	P("\n");
 	P("%s (例)\n", CLR_LBL1);
 	P("%s    %s %s now \"2000/01/01\" %s-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n", CLR_STR1, _cmd, CLR_OPT1, CLR_OPT2);
