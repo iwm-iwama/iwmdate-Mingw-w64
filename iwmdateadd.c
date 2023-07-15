@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20230412"
+#define   IWM_VERSION         "iwmdateadd_20230713"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
@@ -116,12 +116,12 @@ main()
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
 				{
 					bAryDtLock = TRUE;
-					iAryDt = idate_now_to_iAryYmdhns_localtime();
+					iAryDt = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
 					bAryDtLock = TRUE;
-					iAryDt = idate_WCS_to_iAryYmdhns($ARGV[_i1]);
+					iAryDt = idate_WCSToiAryYmdhns($ARGV[_i1]);
 				}
 			}
 		}
@@ -171,8 +171,8 @@ print_version()
 VOID
 print_help()
 {
-	MBS *_cmd = W2U($CMD);
-	MBS *_format = W2U(DATE_FORMAT);
+	MBS *_cmd = W2M($CMD);
+	MBS *_format = W2M(DATE_FORMAT);
 
 	print_version();
 	P("%s 日時の前後を計算 %s\n", CLR_TITLE1, CLR_RESET);

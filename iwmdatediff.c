@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20230412"
+#define   IWM_VERSION         "iwmdatediff_20230713"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
@@ -92,22 +92,22 @@ main()
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_now_to_iAryYmdhns_localtime();
+					iAryDtBgn = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(iCLI_getOptMatch(_i1, L"cjd", NULL))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_WCS_to_iAryYmdhns(CJD);
+					iAryDtBgn = idate_WCSToiAryYmdhns(CJD);
 				}
 				else if(iCLI_getOptMatch(_i1, L"jd", NULL))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_WCS_to_iAryYmdhns(JD);
+					iAryDtBgn = idate_WCSToiAryYmdhns(JD);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_WCS_to_iAryYmdhns($ARGV[_i1]);
+					iAryDtBgn = idate_WCSToiAryYmdhns($ARGV[_i1]);
 				}
 			}
 			else if(! bAryDtEndLock)
@@ -115,22 +115,22 @@ main()
 				if(iCLI_getOptMatch((_i1), L".", L"now"))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_now_to_iAryYmdhns_localtime();
+					iAryDtEnd = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(iCLI_getOptMatch((_i1), L"cjd", NULL))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_WCS_to_iAryYmdhns(CJD);
+					iAryDtEnd = idate_WCSToiAryYmdhns(CJD);
 				}
 				else if(iCLI_getOptMatch((_i1), L"jd", NULL))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_WCS_to_iAryYmdhns(JD);
+					iAryDtEnd = idate_WCSToiAryYmdhns(JD);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[(_i1)]))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_WCS_to_iAryYmdhns($ARGV[(_i1)]);
+					iAryDtEnd = idate_WCSToiAryYmdhns($ARGV[(_i1)]);
 				}
 			}
 		}
@@ -181,8 +181,8 @@ print_version()
 VOID
 print_help()
 {
-	MBS *_cmd = W2U($CMD);
-	MBS *_format = W2U(DATE_FORMAT);
+	MBS *_cmd = W2M($CMD);
+	MBS *_format = W2M(DATE_FORMAT);
 
 	print_version();
 	P("%s 日時差を計算 %s\n", CLR_TITLE1, CLR_RESET);
