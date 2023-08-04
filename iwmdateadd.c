@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20230713"
+#define   IWM_VERSION         "iwmdateadd_20230721"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
-INT  main();
-VOID print_version();
-VOID print_help();
+INT       main();
+VOID      print_version();
+VOID      print_help();
 
 #define   CLR_RESET           "\033[0m"
 #define   CLR_TITLE1          "\033[38;2;250;250;250m\033[104m" // 白／青
@@ -24,7 +24,7 @@ VOID print_help();
 
 // 出力フォーマット
 //   -f=STR | -format=STR
-WCS *_Format = DATE_FORMAT;
+WS *_Format = DATE_FORMAT;
 
 // 改行するとき TRUE
 //   -N
@@ -52,7 +52,7 @@ main()
 		imain_end();
 	}
 
-	WCS *wp1 = 0;
+	WS *wp1 = 0;
 
 	INT *iAryDt = { 0 };
 	INT *iAryDtAdd = icalloc_INT(6); // ±y, ±m, ±d, ±h, ±n, ±s
@@ -121,7 +121,7 @@ main()
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
 					bAryDtLock = TRUE;
-					iAryDt = idate_WCSToiAryYmdhns($ARGV[_i1]);
+					iAryDt = idate_WsToiAryYmdhns($ARGV[_i1]);
 				}
 			}
 		}
@@ -161,18 +161,18 @@ VOID
 print_version()
 {
 	P(CLR_STR2);
-	LN();
+	LN(80);
 	P(" %s\n", IWM_COPYRIGHT);
 	P("    Ver.%s+%s\n", IWM_VERSION, LIB_IWMUTIL_VERSION);
-	LN();
+	LN(80);
 	P(CLR_RESET);
 }
 
 VOID
 print_help()
 {
-	MBS *_cmd = W2M($CMD);
-	MBS *_format = W2M(DATE_FORMAT);
+	MS *_cmd = W2M($CMD);
+	MS *_format = W2M(DATE_FORMAT);
 
 	print_version();
 	P("%s 日時の前後を計算 %s\n", CLR_TITLE1, CLR_RESET);
@@ -211,7 +211,7 @@ print_help()
 	P("%s      (注３) %sプログラム上は、修正ユリウス暦を使用。\n", CLR_OPT22, CLR_STR1);
 	P("\n");
 	P(CLR_STR2);
-	LN();
+	LN(80);
 	P(CLR_RESET);
 
 	ifree(_format);

@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20230713"
+#define   IWM_VERSION         "iwmdatediff_20230721"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
-INT  main();
-VOID print_version();
-VOID print_help();
+INT       main();
+VOID      print_version();
+VOID      print_help();
 
 #define   CLR_RESET           "\033[0m"
 #define   CLR_TITLE1          "\033[38;2;250;250;250m\033[104m" // 白／青
@@ -22,12 +22,9 @@ VOID print_help();
 
 #define   DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
 
-#define   CJD                 L"-4712-01-01 00:00:00"
-#define   JD                  L"-4712-01-01 12:00:00"
-
 // 出力フォーマット
 //   -f=STR | -format=STR
-WCS *_Format = DATE_FORMAT;
+WS *_Format = DATE_FORMAT;
 
 // 改行するとき TRUE
 //   -N
@@ -55,7 +52,7 @@ main()
 		imain_end();
 	}
 
-	WCS *wp1 = 0;
+	WS *wp1 = 0;
 
 	INT *iAryDtBgn = { 0 };
 	INT *iAryDtEnd = { 0 };
@@ -97,17 +94,17 @@ main()
 				else if(iCLI_getOptMatch(_i1, L"cjd", NULL))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_WCSToiAryYmdhns(CJD);
+					iAryDtBgn = idate_WsToiAryYmdhns(CJD_START);
 				}
 				else if(iCLI_getOptMatch(_i1, L"jd", NULL))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_WCSToiAryYmdhns(JD);
+					iAryDtBgn = idate_WsToiAryYmdhns(JD_START);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
 					bAryDtBgnLock = TRUE;
-					iAryDtBgn = idate_WCSToiAryYmdhns($ARGV[_i1]);
+					iAryDtBgn = idate_WsToiAryYmdhns($ARGV[_i1]);
 				}
 			}
 			else if(! bAryDtEndLock)
@@ -120,17 +117,17 @@ main()
 				else if(iCLI_getOptMatch((_i1), L"cjd", NULL))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_WCSToiAryYmdhns(CJD);
+					iAryDtEnd = idate_WsToiAryYmdhns(CJD_START);
 				}
 				else if(iCLI_getOptMatch((_i1), L"jd", NULL))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_WCSToiAryYmdhns(JD);
+					iAryDtEnd = idate_WsToiAryYmdhns(JD_START);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[(_i1)]))
 				{
 					bAryDtEndLock = TRUE;
-					iAryDtEnd = idate_WCSToiAryYmdhns($ARGV[(_i1)]);
+					iAryDtEnd = idate_WsToiAryYmdhns($ARGV[(_i1)]);
 				}
 			}
 		}
@@ -171,18 +168,18 @@ VOID
 print_version()
 {
 	P(CLR_STR2);
-	LN();
+	LN(80);
 	P(" %s\n", IWM_COPYRIGHT);
 	P("    Ver.%s+%s\n", IWM_VERSION, LIB_IWMUTIL_VERSION);
-	LN();
+	LN(80);
 	P(CLR_RESET);
 }
 
 VOID
 print_help()
 {
-	MBS *_cmd = W2M($CMD);
-	MBS *_format = W2M(DATE_FORMAT);
+	MS *_cmd = W2M($CMD);
+	MS *_format = W2M(DATE_FORMAT);
 
 	print_version();
 	P("%s 日時差を計算 %s\n", CLR_TITLE1, CLR_RESET);
@@ -220,7 +217,7 @@ print_help()
 	P("%s      (注３) %sプログラム上は、修正ユリウス暦を使用。\n", CLR_OPT22, CLR_STR1);
 	P("\n");
 	P(CLR_STR2);
-	LN();
+	LN(80);
 	P(CLR_RESET);
 
 	ifree(_format);
