@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20230809"
+#define   IWM_VERSION         "iwmdatediff_20230828"
 #define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
@@ -122,9 +122,9 @@ main()
 	// Err
 	if(! bAryDtBgnLock || ! bAryDtEndLock)
 	{
-		P(ICLR_ERR1);
+		P(IESC_ERR1);
 		P1W(L"[Err] 引数 Date1, Date2 を入力してください!");
-		P(ICLR_RESET);
+		P(IESC_RESET);
 		NL();
 		imain_end();
 	}
@@ -153,12 +153,15 @@ main()
 VOID
 print_version()
 {
-	P(ICLR_STR2);
+	P1(IESC_STR2);
 	LN(80);
-	P(" %s\n", IWM_COPYRIGHT);
-	P("    Ver.%s+%s\n", IWM_VERSION, LIB_IWMUTIL_VERSION);
+	P(
+		" %s\n"
+		"    Ver.%s+%s\n"
+		, IWM_COPYRIGHT, IWM_VERSION, LIB_IWMUTIL_VERSION
+	);
 	LN(80);
-	P(ICLR_RESET);
+	P1(IESC_RESET);
 }
 
 VOID
@@ -168,43 +171,58 @@ print_help()
 	MS *_format = W2M(DATE_FORMAT);
 
 	print_version();
-	P("%s 日時差を計算 %s\n", ICLR_TITLE1, ICLR_RESET);
-	P("%s    %s %s[Date1] [Date2] %s[Option]\n", ICLR_STR1, _cmd, ICLR_OPT1, ICLR_OPT2);
-	P("%s        or\n", ICLR_LBL1);
-	P("%s    %s %s[Option] %s[Date1] [Date2]\n", ICLR_STR1, _cmd, ICLR_OPT2, ICLR_OPT1);
-	P("\n");
-	P("%s (例)\n", ICLR_LBL1);
-	P("%s    %s %s now \"2000/01/01\" %s-f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n", ICLR_STR1, _cmd, ICLR_OPT1, ICLR_OPT2);
-	P("\n");
-	P("%s [Date1] [Date2]\n", ICLR_OPT1);
-	P("%s    now  .  (現在日時)\n", ICLR_STR1);
-	P("%s    cjd     (修正ユリウス開始日 -4712/01/01 00:00:00)\n", ICLR_STR1);
-	P("%s    jd      (ユリウス開始日     -4712/01/01 12:00:00)\n", ICLR_STR1);
-	P("%s    \"+2000/01/01"  "+2000-01-01\"\n", ICLR_STR1);
-	P("%s    \"+2000/01/01 00:00:00"  "+2000-01-01 00:00:00\"\n", ICLR_STR1);
-	P("\n");
-	P("%s [Option]\n", ICLR_OPT2);
-	P("%s    -format=STR | -f=STR\n", ICLR_OPT21);
-	P("%s        ※STRが無指定のとき \"%s\"\n", ICLR_STR1, _format);
-	P("%s        %%g：+/-表示\n", ICLR_STR1);
-	P("%s        %%y：年  %%m：月  %%d：日  %%h：時  %%n：分  %%s：秒\n", ICLR_STR1);
-	P("%s        通算  %%Y：年  %%M：月  %%D：日\n", ICLR_STR1);
-	P("%s              %%H：時  %%N：分  %%S：秒\n", ICLR_STR1);
-	P("%s              %%W：週  %%w：週余日\n", ICLR_STR1);
-	P("%s        \\t：タブ  \\n：改行\n", ICLR_STR1);
-	P("%s    -N\n", ICLR_OPT21);
-	P("%s        改行しない\n", ICLR_STR1);
-	P("\n");
-	P("%s (備考)\n", ICLR_LBL1);
-	P("%s    ・ユリウス暦 （-4712/01/01～1582/10/04）\n", ICLR_STR1);
-	P("%s    ・グレゴリオ暦（1582/10/15～9999/12/31）\n", ICLR_STR1);
-	P("%s      (注１) %s空白暦 1582/10/5～1582/10/14 は、\"1582/10/4\" として取扱う。\n", ICLR_OPT22, ICLR_STR1);
-	P("%s      (注２) %sBC暦は、\"-1/1/1\" を \"0/1/1\" として取扱う。\n", ICLR_OPT22, ICLR_STR1);
-	P("%s      (注３) %sプログラム上は、修正ユリウス暦を使用。\n", ICLR_OPT22, ICLR_STR1);
-	P("\n");
-	P(ICLR_STR2);
+	P(
+		IESC_TITLE1	" 日時差を計算 "
+		IESC_RESET	"\n"
+		IESC_STR1	"    %s"
+		IESC_OPT1	" [Date1] [Date2]"
+		IESC_OPT2	" [Option]\n"
+		IESC_LBL1	"        or\n"
+		IESC_STR1	"    %s"
+		IESC_OPT2	" [Option]"
+		IESC_OPT1	" [Date1] [Date2]\n\n"
+		IESC_LBL1	" (例)\n"
+		IESC_STR1	"    %s"
+		IESC_OPT1	" now \"2000/1/1\""
+		IESC_OPT2	" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n"
+		, _cmd, _cmd, _cmd
+	);
+	P1(
+		IESC_OPT1	" [Date1] [Date2]\n"
+		IESC_STR1	"    now  .  (現在日時)\n"
+					"    cjd     (修正ユリウス開始日 -4712/01/01 00:00:00)\n"
+					"    jd      (ユリウス開始日     -4712/01/01 12:00:00)\n"
+					"    \"+2000/1/1\"  \"+2000-1-1\"\n"
+					"    \"+2000/1/1 00:00:00\"  \"+2000-1-1 00:00:00\"\n\n"
+	);
+	P(
+		IESC_OPT2	" [Option]\n"
+		IESC_OPT21	"    -format=STR | -f=STR\n"
+		IESC_STR1	"        ※STRが無指定のとき \"%s\"\n"
+					"        %%g：+/-表示\n"
+					"        %%y：年  %%m：月  %%d：日  %%h：時  %%n：分  %@：秒\n"
+					"        通算  %%Y：年  %%M：月  %%D：日\n"
+					"              %%H：時  %%N：分  %%S：秒\n"
+					"              %%W：週  %%w：週余日\n"
+					"        \\t：タブ  \\n：改行\n\n"
+		IESC_OPT21	"    -N\n"
+		IESC_STR1	"        改行しない\n\n"
+		, _format
+	);
+	P1(
+		IESC_LBL1	" (備考)\n"
+		IESC_STR1	"    ・ユリウス暦 （-4712/01/01～1582/10/04）\n"
+					"    ・グレゴリオ暦（1582/10/15～9999/12/31）\n"
+		IESC_OPT22	"      (注１)"
+		IESC_STR1	" 空白暦 1582/10/05～1582/10/14 は、\"1582/10/04\" として取扱う。\n"
+		IESC_OPT22	"      (注２)"
+		IESC_STR1	" BC暦は、\"-1/01/01\" を \"0/01/01\" として取扱う。\n"
+		IESC_OPT22	"      (注３)"
+		IESC_STR1	" プログラム上は、修正ユリウス暦を使用。\n\n"
+	);
+	P1(IESC_STR2);
 	LN(80);
-	P(ICLR_RESET);
+	P1(IESC_RESET);
 
 	ifree(_format);
 	ifree(_cmd);
