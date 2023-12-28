@@ -2,7 +2,7 @@
 	@echo off
 	cls
 
-	:: ãƒ•ã‚¡ã‚¤ãƒ«åã¯ã‚½ãƒ¼ã‚¹ã¨åŒã˜
+	:: ƒtƒ@ƒCƒ‹–¼‚Íƒ\[ƒX‚Æ“¯‚¶
 	set fn=%~n0
 	set src=%fn%.c
 	set fn_exe=%fn%.exe
@@ -27,14 +27,14 @@
 	%cc% *.o %lib% -o %fn_exe% %cc_op%
 	echo.
 
-	:: å¾Œå‡¦ç†
+	:: Œãˆ—
 	strip %fn_exe%
 	rm *.o
 
-	:: å¤±æ•—
+	:: ¸”s
 	if not exist "%fn_exe%" goto end
 
-	:: æˆåŠŸ
+	:: ¬Œ÷
 	echo.
 	pause
 
@@ -100,15 +100,15 @@ echo.
 echo.
 	set ymd="2000/1/1"
 	%fn_exe% %ymd%
-	%fn_exe% %ymd% -h=-36                -f="%%y-%%m-%%d %%h:%%n:%%s"
-	%fn_exe% %ymd% -h=-36 -n=-90         -f="%%y-%%m-%%d %%h:%%n:%%s"
-	%fn_exe% %ymd% -h=-36 -n=-90 -s=-300 -f="%%y-%%m-%%d %%h:%%n:%%s"
+	%fn_exe% %ymd% -h=-36                -f="%%y”N%%mŒ%%d“ú %%h%%n•ª%%s•b"
+	%fn_exe% %ymd% -h=-36 -n=-90         -f="%%y”N%%mŒ%%d“ú %%h%%n•ª%%s•b"
+	%fn_exe% %ymd% -h=-36 -n=-90 -s=-300 -f="%%y”N%%mŒ%%d“ú %%h%%n•ª%%s•b"
 echo.
 	set ymd="1582/10/4"
-	%fn_exe% %ymd% -d=0 -f="%%y-%%m-%%d(%%a) %%C %%J"
-	%fn_exe% %ymd% -d=1 -f="%%y-%%m-%%d(%%a) %%C %%J"
+	%fn_exe% %ymd% -d=0 -f="%%y”N%%mŒ%%d“ú(%%a) CJD:%%CŒo‰ß“ú JD:%%JŒo‰ß“ú"
+	%fn_exe% %ymd% -d=1 -f="%%y”N%%mŒ%%d“ú(%%a) CJD:%%CŒo‰ß“ú JD:%%JŒo‰ß“ú"
 echo.
-	%fn_exe% . -f="CJD:%%C JD:%%J"
+	%fn_exe% . -f="CJD:%%CŒo‰ß“ú JD:%%JŒo‰ß“ú"
 
 :: Quit ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :end

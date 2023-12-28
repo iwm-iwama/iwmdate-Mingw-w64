@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdateadd_20230828"
-#define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
+#define   IWM_COPYRIGHT       "(C)2008-2023 iwm-iwama"
+#define   IWM_VERSION         "iwmdateadd_20231223"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -24,14 +24,14 @@ main()
 	// lib_iwmutil2 初期化
 	imain_begin();
 
-	// -h | -help
+	// -h | --help
 	if(! $ARGC || iCLI_getOptMatch(0, L"-h", L"--help"))
 	{
 		print_help();
 		imain_end();
 	}
 
-	// -v | -version
+	// -v | --version
 	if(iCLI_getOptMatch(0, L"-v", L"--version"))
 	{
 		print_version();
@@ -43,8 +43,8 @@ main()
 	INT *iAryDt = { 0 };
 	INT *iAryDtAdd = icalloc_INT(6); // ±y, ±m, ±d, ±h, ±n, ±s
 
-	// 代入されたらロック
-	BOOL bAryDtLock = FALSE;
+	// 日付が代入されたらTRUE
+	BOOL bDateFlg = FALSE;
 
 	// Main Loop
 	for(INT _i1 = 0; _i1 < $ARGC; _i1++)
@@ -97,16 +97,16 @@ main()
 		// "0" など
 		else
 		{
-			if(! bAryDtLock)
+			if(! bDateFlg)
 			{
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
 				{
-					bAryDtLock = TRUE;
+					bDateFlg = TRUE;
 					iAryDt = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
-					bAryDtLock = TRUE;
+					bDateFlg = TRUE;
 					iAryDt = idate_WsToiAryYmdhns($ARGV[_i1]);
 				}
 			}
@@ -114,12 +114,9 @@ main()
 	}
 
 	// Err
-	if(! bAryDtLock)
+	if(! bDateFlg)
 	{
-		P(IESC_ERR1);
-		P1W(L"[Err] 引数 Date を入力してください!");
-		P(IESC_RESET);
-		NL();
+		P2(IESC_FALSE1 "[Err] 引数 Date を入力してください!" IESC_RESET);
 		imain_end();
 	}
 
@@ -137,8 +134,7 @@ main()
 		NL();
 	}
 
-	// Debug
-	/// icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
+	///icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
 
 	imain_end();
 }
@@ -150,7 +146,7 @@ print_version()
 	LN(80);
 	P(
 		" %s\n"
-		"    Ver.%s+%s\n"
+		"    %s+%s\n"
 		, IWM_COPYRIGHT, IWM_VERSION, LIB_IWMUTIL_VERSION
 	);
 	LN(80);

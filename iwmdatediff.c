@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define   IWM_VERSION         "iwmdatediff_20230828"
-#define   IWM_COPYRIGHT       "Copyright (C)2008-2023 iwm-iwama"
+#define   IWM_COPYRIGHT       "(C)2008-2023 iwm-iwama"
+#define   IWM_VERSION         "iwmdatediff_20231223"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -24,14 +24,16 @@ main()
 	// lib_iwmutil2 初期化
 	imain_begin();
 
-	// -h | -help
+	///iCLI_VarList();
+
+	// -h | --help
 	if($ARGC < 2 || iCLI_getOptMatch(0, L"-h", L"--help"))
 	{
 		print_help();
 		imain_end();
 	}
 
-	// -v | -version
+	// -v | --version
 	if(iCLI_getOptMatch(0, L"-v", L"--version"))
 	{
 		print_version();
@@ -43,9 +45,9 @@ main()
 	INT *iAryDtBgn = { 0 };
 	INT *iAryDtEnd = { 0 };
 
-	// 代入されたらロック
-	BOOL bAryDtBgnLock = FALSE;
-	BOOL bAryDtEndLock = FALSE;
+	// 日付が代入されたらTRUE
+	BOOL bDateFlg1 = FALSE;
+	BOOL bDateFlg2 = FALSE;
 
 	// Main Loop
 	for(INT _i1 = 0; _i1 < $ARGC; _i1++)
@@ -70,49 +72,49 @@ main()
 					"cjd"     => 修正ユリウス開始時
 					"jd"      => ユリウス開始時
 			*/
-			if(! bAryDtBgnLock)
+			if(! bDateFlg1)
 			{
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
 				{
-					bAryDtBgnLock = TRUE;
+					bDateFlg1 = TRUE;
 					iAryDtBgn = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(iCLI_getOptMatch(_i1, L"cjd", NULL))
 				{
-					bAryDtBgnLock = TRUE;
+					bDateFlg1 = TRUE;
 					iAryDtBgn = idate_WsToiAryYmdhns(CJD_START);
 				}
 				else if(iCLI_getOptMatch(_i1, L"jd", NULL))
 				{
-					bAryDtBgnLock = TRUE;
+					bDateFlg1 = TRUE;
 					iAryDtBgn = idate_WsToiAryYmdhns(JD_START);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
-					bAryDtBgnLock = TRUE;
+					bDateFlg1 = TRUE;
 					iAryDtBgn = idate_WsToiAryYmdhns($ARGV[_i1]);
 				}
 			}
-			else if(! bAryDtEndLock)
+			else if(! bDateFlg2)
 			{
 				if(iCLI_getOptMatch((_i1), L".", L"now"))
 				{
-					bAryDtEndLock = TRUE;
+					bDateFlg2 = TRUE;
 					iAryDtEnd = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(iCLI_getOptMatch((_i1), L"cjd", NULL))
 				{
-					bAryDtEndLock = TRUE;
+					bDateFlg2 = TRUE;
 					iAryDtEnd = idate_WsToiAryYmdhns(CJD_START);
 				}
 				else if(iCLI_getOptMatch((_i1), L"jd", NULL))
 				{
-					bAryDtEndLock = TRUE;
+					bDateFlg2 = TRUE;
 					iAryDtEnd = idate_WsToiAryYmdhns(JD_START);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[(_i1)]))
 				{
-					bAryDtEndLock = TRUE;
+					bDateFlg2 = TRUE;
 					iAryDtEnd = idate_WsToiAryYmdhns($ARGV[(_i1)]);
 				}
 			}
@@ -120,12 +122,13 @@ main()
 	}
 
 	// Err
-	if(! bAryDtBgnLock || ! bAryDtEndLock)
+	if(! bDateFlg1 || ! bDateFlg2)
 	{
-		P(IESC_ERR1);
-		P1W(L"[Err] 引数 Date1, Date2 を入力してください!");
-		P(IESC_RESET);
-		NL();
+		P2(
+			IESC_FALSE1
+			"[Err] 引数 Date1, Date2 を入力してください!"
+			IESC_RESET
+		);
 		imain_end();
 	}
 
@@ -144,8 +147,7 @@ main()
 		NL();
 	}
 
-	// Debug
-	/// icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
+	///icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
 
 	imain_end();
 }
@@ -157,7 +159,7 @@ print_version()
 	LN(80);
 	P(
 		" %s\n"
-		"    Ver.%s+%s\n"
+		"    %s+%s\n"
 		, IWM_COPYRIGHT, IWM_VERSION, LIB_IWMUTIL_VERSION
 	);
 	LN(80);

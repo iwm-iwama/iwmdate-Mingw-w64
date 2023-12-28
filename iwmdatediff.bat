@@ -2,7 +2,7 @@
 	@echo off
 	cls
 
-	:: ãƒ•ã‚¡ã‚¤ãƒ«åã¯ã‚½ãƒ¼ã‚¹ã¨åŒã˜
+	:: ƒtƒ@ƒCƒ‹–¼‚Íƒ\[ƒX‚Æ“¯‚¶
 	set fn=%~n0
 	set src=%fn%.c
 	set fn_exe=%fn%.exe
@@ -27,14 +27,14 @@
 	%cc% *.o %lib% -o %fn_exe% %cc_op%
 	echo.
 
-	:: å¾Œå‡¦ç†
+	:: Œãˆ—
 	strip %fn_exe%
 	rm *.o
 
-	:: å¤±æ•—
+	:: ¸”s
 	if not exist "%fn_exe%" goto end
 
-	:: æˆåŠŸ
+	:: ¬Œ÷
 	echo.
 	pause
 
@@ -46,10 +46,10 @@
 
 	%fn_exe%
 	%fn_exe% %s2% %s1%
-	%fn_exe% %s2% %s1% -format="%%g%%yå¹´%%mæœˆ%%dæ—¥ %%Dé€šç®—æ—¥ %%Wé€±%%wæ—¥"
+	%fn_exe% %s2% %s1% -format="%%g%%y”N%%mŒ%%d“ú %%D’ÊZ“ú %%WT%%w“ú"
 	%fn_exe% %s1% %s2%
-	%fn_exe% %s1% %s2% -format="%%g%%yå¹´%%mæœˆ%%dæ—¥ %%Dé€šç®—æ—¥ %%Wé€±%%wæ—¥"
-	%fn_exe% %s1% %s2% -f="%%Yé€šç®—å¹´ %%Mé€šç®—æœˆ %%Hé€šç®—æ™‚ %%Né€šç®—åˆ† %%Sé€šç®—ç§’"
+	%fn_exe% %s1% %s2% -format="%%g%%y”N%%mŒ%%d“ú %%D’ÊZ“ú %%WT%%w“ú"
+	%fn_exe% %s1% %s2% -f="%%Y’ÊZ”N %%M’ÊZŒ %%H’ÊZ %%N’ÊZ•ª %%S’ÊZ•b"
 
 	echo.
 	echo cjd . -f="g:%%g M:%%M D:%%D H:%%H N:%%N S:%%S W:%%W"
