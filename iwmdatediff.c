@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2023 iwm-iwama"
-#define   IWM_VERSION         "iwmdatediff_20231223"
+#define   IWM_VERSION         "iwmdatediff_20231230"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -8,11 +8,13 @@ INT       main();
 VOID      print_version();
 VOID      print_help();
 
-#define   DATE_FORMAT         L"%g%y-%m-%d" // (注)%g付けないと全て正数表示
+// (注)%g付けないと全て正数表示
+#define   DATE_FORMATM        "%g%y-%m-%d"
+#define   DATE_FORMATW        L"%g%y-%m-%d"
 
 // 出力フォーマット
 //   -f=STR | -format=STR
-WS *_Format = DATE_FORMAT;
+WS *_Format = DATE_FORMATW;
 
 // 改行するとき TRUE
 //   -N
@@ -160,7 +162,10 @@ print_version()
 	P(
 		" %s\n"
 		"    %s+%s\n"
-		, IWM_COPYRIGHT, IWM_VERSION, LIB_IWMUTIL_VERSION
+		,
+		IWM_COPYRIGHT,
+		IWM_VERSION,
+		LIB_IWMUTIL_VERSION
 	);
 	LN(80);
 	P1(IESC_RESET);
@@ -169,8 +174,8 @@ print_version()
 VOID
 print_help()
 {
-	MS *_cmd = W2M($CMD);
-	MS *_format = W2M(DATE_FORMAT);
+	MS *_cmd = "iwmdatediff.exe";
+	MS *_format = DATE_FORMATM;
 
 	print_version();
 	P(
@@ -187,7 +192,10 @@ print_help()
 		IESC_STR1	"    %s"
 		IESC_OPT1	" now \"2000/1/1\""
 		IESC_OPT2	" -f=\"%%g%%y-%%m-%%d %%h:%%n:%%s\"\n\n"
-		, _cmd, _cmd, _cmd
+		,
+		_cmd,
+		_cmd,
+		_cmd
 	);
 	P1(
 		IESC_OPT1	" [Date1] [Date2]\n"
@@ -227,5 +235,4 @@ print_help()
 	P1(IESC_RESET);
 
 	ifree(_format);
-	ifree(_cmd);
 }
