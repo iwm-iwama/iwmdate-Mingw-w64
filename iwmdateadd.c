@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
-#define   IWM_COPYRIGHT       "(C)2008-2023 iwm-iwama"
-#define   IWM_VERSION         "iwmdateadd_20231230"
+#define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
+#define   IWM_VERSION         "iwmdateadd_20240110"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -166,19 +166,18 @@ print_help()
 
 	print_version();
 	P(
-		IESC_TITLE1	" 日時の前後を計算 "
-		IESC_RESET	"\n"
+		IESC_TITLE1	" 日時の前後を計算 "	IESC_RESET	"\n\n"
 		IESC_STR1	"    %s"
 		IESC_OPT1	" [Date]"
 		IESC_OPT2	" [Option]\n"
 		IESC_LBL1	"        or\n"
 		IESC_STR1	"    %s"
 		IESC_OPT2	" [Option]"
-		IESC_OPT1	" [Date]\n\n"
+		IESC_OPT1	" [Date]\n\n\n"
 		IESC_LBL1	" (例)\n"
 		IESC_STR1	"    %s"
 		IESC_OPT1	" \"2000/1/1\""
-		IESC_OPT2	" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n"
+		IESC_OPT2	" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n\n"
 		,
 		_cmd,
 		_cmd,
@@ -188,7 +187,7 @@ print_help()
 		IESC_OPT1	" [Date]\n"
 		IESC_STR1	"    now  .  (現在日時)\n"
 					"    \"+2000/1/1\"  \"+2000-1-1\"\n"
-					"    \"+2000/1/1 00:00:00\"  \"+2000-1-1 00:00:00\"\n\n"
+					"    \"+2000/1/1 00:00:00\"  \"+2000-1-1 00:00:00\"\n\n\n"
 	);
 	P(
 		IESC_OPT2	" [Option]\n"
@@ -203,8 +202,9 @@ print_help()
 					"        %%e：年通算週\n"
 					"        \\t：タブ  \\n：改行\n\n"
 		IESC_OPT21	"    -N\n"
-		IESC_STR1	"        改行しない\n\n"
-		, _format
+		IESC_STR1	"        改行しない\n\n\n"
+		,
+		_format
 	);
 	P1(
 		IESC_LBL1	" (備考)\n"
