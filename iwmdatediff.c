@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
-#define   IWM_VERSION         "iwmdatediff_20240110"
+#define   IWM_VERSION         "iwmdatediff_20240122"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -44,8 +44,8 @@ main()
 
 	WS *wp1 = 0;
 
-	INT *iAryDtBgn = { 0 };
-	INT *iAryDtEnd = { 0 };
+	INT *aiDateBgn = 0;
+	INT *aiDateEnd = 0;
 
 	// 日付が代入されたらTRUE
 	BOOL bDateFlg1 = FALSE;
@@ -79,22 +79,22 @@ main()
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
 				{
 					bDateFlg1 = TRUE;
-					iAryDtBgn = idate_nowToiAryYmdhns_localtime();
+					aiDateBgn = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(iCLI_getOptMatch(_i1, L"cjd", NULL))
 				{
 					bDateFlg1 = TRUE;
-					iAryDtBgn = idate_WsToiAryYmdhns(CJD_START);
+					aiDateBgn = idate_WsToiAryYmdhns(CJD_START);
 				}
 				else if(iCLI_getOptMatch(_i1, L"jd", NULL))
 				{
 					bDateFlg1 = TRUE;
-					iAryDtBgn = idate_WsToiAryYmdhns(JD_START);
+					aiDateBgn = idate_WsToiAryYmdhns(JD_START);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
 					bDateFlg1 = TRUE;
-					iAryDtBgn = idate_WsToiAryYmdhns($ARGV[_i1]);
+					aiDateBgn = idate_WsToiAryYmdhns($ARGV[_i1]);
 				}
 			}
 			else if(! bDateFlg2)
@@ -102,22 +102,22 @@ main()
 				if(iCLI_getOptMatch((_i1), L".", L"now"))
 				{
 					bDateFlg2 = TRUE;
-					iAryDtEnd = idate_nowToiAryYmdhns_localtime();
+					aiDateEnd = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(iCLI_getOptMatch((_i1), L"cjd", NULL))
 				{
 					bDateFlg2 = TRUE;
-					iAryDtEnd = idate_WsToiAryYmdhns(CJD_START);
+					aiDateEnd = idate_WsToiAryYmdhns(CJD_START);
 				}
 				else if(iCLI_getOptMatch((_i1), L"jd", NULL))
 				{
 					bDateFlg2 = TRUE;
-					iAryDtEnd = idate_WsToiAryYmdhns(JD_START);
+					aiDateEnd = idate_WsToiAryYmdhns(JD_START);
 				}
 				else if(idate_chk_ymdhnsW($ARGV[(_i1)]))
 				{
 					bDateFlg2 = TRUE;
-					iAryDtEnd = idate_WsToiAryYmdhns($ARGV[(_i1)]);
+					aiDateEnd = idate_WsToiAryYmdhns($ARGV[(_i1)]);
 				}
 			}
 		}
@@ -135,14 +135,19 @@ main()
 	}
 
 	// diff[8]
-	INT *iAryDiff = idate_diff(
-		iAryDtBgn[0], iAryDtBgn[1], iAryDtBgn[2], iAryDtBgn[3], iAryDtBgn[4], iAryDtBgn[5],
-		iAryDtEnd[0], iAryDtEnd[1], iAryDtEnd[2], iAryDtEnd[3], iAryDtEnd[4], iAryDtEnd[5]
-	);
+	$struct_iDV *IDV = iDV_alloc();
+		idate_diff(
+			IDV,
+			aiDateBgn[0], aiDateBgn[1], aiDateBgn[2], aiDateBgn[3], aiDateBgn[4], aiDateBgn[5],
+			aiDateEnd[0], aiDateEnd[1], aiDateEnd[2], aiDateEnd[3], aiDateEnd[4], aiDateEnd[5]
+		);
+		wp1 = idate_format(_Format, IDV->sign, IDV->y, IDV->m, IDV->d, IDV->h, IDV->n, IDV->s, IDV->days);
+			P1W(wp1);
+		ifree(wp1);
+	iDV_free(IDV);
 
-	wp1 = idate_format_diff(_Format, iAryDiff[0], iAryDiff[1], iAryDiff[2], iAryDiff[3], iAryDiff[4], iAryDiff[5], iAryDiff[6], iAryDiff[7]);
-		P1W(wp1);
-	ifree(wp1);
+	ifree(aiDateEnd);
+	ifree(aiDateBgn);
 
 	if(_NL)
 	{

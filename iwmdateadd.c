@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
-#define   IWM_VERSION         "iwmdateadd_20240110"
+#define   IWM_VERSION         "iwmdateadd_20240122"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -42,8 +42,8 @@ main()
 
 	WS *wp1 = 0;
 
-	INT *iAryDt = { 0 };
-	INT *iAryDtAdd = icalloc_INT(6); // ±y, ±m, ±d, ±h, ±n, ±s
+	INT *aiAdd = icalloc_INT(6); // ±y, ±m, ±d, ±h, ±n, ±s
+	INT *aiDate = 0;
 
 	// 日付が代入されたらTRUE
 	BOOL bDateFlg = FALSE;
@@ -54,37 +54,37 @@ main()
 		// -y
 		if((wp1 = iCLI_getOptValue(_i1, L"-y=", NULL)))
 		{
-			iAryDtAdd[0] += _wtoi(wp1);
+			aiAdd[0] += _wtoi(wp1);
 		}
 		// -m
 		else if((wp1 = iCLI_getOptValue(_i1, L"-m=", NULL)))
 		{
-			iAryDtAdd[1] += _wtoi(wp1);
+			aiAdd[1] += _wtoi(wp1);
 		}
 		// -d
 		else if((wp1 = iCLI_getOptValue(_i1, L"-d=", NULL)))
 		{
-			iAryDtAdd[2] += _wtoi(wp1);
+			aiAdd[2] += _wtoi(wp1);
 		}
 		// -w
 		else if((wp1 = iCLI_getOptValue(_i1, L"-w=", NULL)))
 		{
-			iAryDtAdd[2] += _wtoi(wp1) * 7;
+			aiAdd[2] += _wtoi(wp1) * 7;
 		}
 		// -h
 		else if((wp1 = iCLI_getOptValue(_i1, L"-h=", NULL)))
 		{
-			iAryDtAdd[3] += _wtoi(wp1);
+			aiAdd[3] += _wtoi(wp1);
 		}
 		// -n
 		else if((wp1 = iCLI_getOptValue(_i1, L"-n=", NULL)))
 		{
-			iAryDtAdd[4] += _wtoi(wp1);
+			aiAdd[4] += _wtoi(wp1);
 		}
 		// -s
 		else if((wp1 = iCLI_getOptValue(_i1, L"-s=", NULL)))
 		{
-			iAryDtAdd[5] += _wtoi(wp1);
+			aiAdd[5] += _wtoi(wp1);
 		}
 		// -f | -format
 		else if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
@@ -104,12 +104,12 @@ main()
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
 				{
 					bDateFlg = TRUE;
-					iAryDt = idate_nowToiAryYmdhns_localtime();
+					aiDate = idate_nowToiAryYmdhns_localtime();
 				}
 				else if(idate_chk_ymdhnsW($ARGV[_i1]))
 				{
 					bDateFlg = TRUE;
-					iAryDt = idate_WsToiAryYmdhns($ARGV[_i1]);
+					aiDate = idate_WsToiAryYmdhns($ARGV[_i1]);
 				}
 			}
 		}
@@ -122,14 +122,19 @@ main()
 		imain_end();
 	}
 
-	INT *iAryDt2 = idate_add(
-		iAryDt[0], iAryDt[1], iAryDt[2], iAryDt[3], iAryDt[4], iAryDt[5],
-		iAryDtAdd[0], iAryDtAdd[1], iAryDtAdd[2], iAryDtAdd[3], iAryDtAdd[4], iAryDtAdd[5]
-	);
+	$struct_iDV *IDV = iDV_alloc();
+		idate_add(
+			IDV,
+			aiDate[0], aiDate[1], aiDate[2], aiDate[3], aiDate[4], aiDate[5],
+			aiAdd[0], aiAdd[1], aiAdd[2], aiAdd[3], aiAdd[4], aiAdd[5]
+		);
+		wp1 = idate_format_ymdhns(_Format, IDV->y, IDV->m, IDV->d, IDV->h, IDV->n, IDV->s);
+			P1W(wp1);
+		ifree(wp1);
+	iDV_free(IDV);
 
-	wp1 = idate_format_ymdhns(_Format, iAryDt2[0], iAryDt2[1], iAryDt2[2], iAryDt2[3], iAryDt2[4], iAryDt2[5]);
-		P1W(wp1);
-	ifree(wp1);
+	ifree(aiDate);
+	ifree(aiAdd);
 
 	if(_NL)
 	{
