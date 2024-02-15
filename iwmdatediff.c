@@ -67,13 +67,11 @@ main()
 		// "0" など
 		else
 		{
-			/*
-				連続する日付 [date1] [date2] のみ有効
-				位置は [0..1] or [$ARGC-2..$ARGC-1]
-					"." "now" => 現在時
-					"cjd"     => 修正ユリウス開始時
-					"jd"      => ユリウス開始時
-			*/
+			// 連続する日付 [date1] [date2] のみ有効
+			// 位置は [0..1] or [$ARGC-2..$ARGC-1]
+			//   "." "now" => 現在時
+			//   "cjd"     => 修正ユリウス開始時
+			//   "jd"      => ユリウス開始時
 			if(! bDateFlg1)
 			{
 				if(iCLI_getOptMatch(_i1, L".", L"now"))
