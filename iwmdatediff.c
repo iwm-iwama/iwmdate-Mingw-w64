@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
-#define   IWM_VERSION         "iwmdatediff_20240122"
+#define   IWM_VERSION         "iwmdatediff_20240226"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -52,15 +52,15 @@ main()
 	BOOL bDateFlg2 = FALSE;
 
 	// Main Loop
-	for(INT _i1 = 0; _i1 < $ARGC; _i1++)
+	for(UINT _u1 = 0; _u1 < $ARGC; _u1++)
 	{
 		// -f | -format
-		if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
+		if((wp1 = iCLI_getOptValue(_u1, L"-f=", L"-format=")))
 		{
 			_Format = wp1;
 		}
 		// -N
-		else if(iCLI_getOptMatch(_i1, L"-N", NULL))
+		else if(iCLI_getOptMatch(_u1, L"-N", NULL))
 		{
 			_NL = FALSE;
 		}
@@ -74,48 +74,48 @@ main()
 			//   "jd"      => ユリウス開始時
 			if(! bDateFlg1)
 			{
-				if(iCLI_getOptMatch(_i1, L".", L"now"))
+				if(iCLI_getOptMatch(_u1, L".", L"now"))
 				{
 					bDateFlg1 = TRUE;
 					aiDateBgn = idate_nowToiAryYmdhns_localtime();
 				}
-				else if(iCLI_getOptMatch(_i1, L"cjd", NULL))
+				else if(iCLI_getOptMatch(_u1, L"cjd", NULL))
 				{
 					bDateFlg1 = TRUE;
 					aiDateBgn = idate_WsToiAryYmdhns(CJD_START);
 				}
-				else if(iCLI_getOptMatch(_i1, L"jd", NULL))
+				else if(iCLI_getOptMatch(_u1, L"jd", NULL))
 				{
 					bDateFlg1 = TRUE;
 					aiDateBgn = idate_WsToiAryYmdhns(JD_START);
 				}
-				else if(idate_chk_ymdhnsW($ARGV[_i1]))
+				else if(idate_chk_ymdhnsW($ARGV[_u1]))
 				{
 					bDateFlg1 = TRUE;
-					aiDateBgn = idate_WsToiAryYmdhns($ARGV[_i1]);
+					aiDateBgn = idate_WsToiAryYmdhns($ARGV[_u1]);
 				}
 			}
 			else if(! bDateFlg2)
 			{
-				if(iCLI_getOptMatch((_i1), L".", L"now"))
+				if(iCLI_getOptMatch((_u1), L".", L"now"))
 				{
 					bDateFlg2 = TRUE;
 					aiDateEnd = idate_nowToiAryYmdhns_localtime();
 				}
-				else if(iCLI_getOptMatch((_i1), L"cjd", NULL))
+				else if(iCLI_getOptMatch((_u1), L"cjd", NULL))
 				{
 					bDateFlg2 = TRUE;
 					aiDateEnd = idate_WsToiAryYmdhns(CJD_START);
 				}
-				else if(iCLI_getOptMatch((_i1), L"jd", NULL))
+				else if(iCLI_getOptMatch((_u1), L"jd", NULL))
 				{
 					bDateFlg2 = TRUE;
 					aiDateEnd = idate_WsToiAryYmdhns(JD_START);
 				}
-				else if(idate_chk_ymdhnsW($ARGV[(_i1)]))
+				else if(idate_chk_ymdhnsW($ARGV[(_u1)]))
 				{
 					bDateFlg2 = TRUE;
-					aiDateEnd = idate_WsToiAryYmdhns($ARGV[(_i1)]);
+					aiDateEnd = idate_WsToiAryYmdhns($ARGV[(_u1)]);
 				}
 			}
 		}
@@ -152,7 +152,7 @@ main()
 		NL();
 	}
 
-	///icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
+	///idebug_map(); ifree_all(); idebug_map();
 
 	imain_end();
 }

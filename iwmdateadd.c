@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
-#define   IWM_VERSION         "iwmdateadd_20240122"
+#define   IWM_VERSION         "iwmdateadd_20240226"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -49,50 +49,50 @@ main()
 	BOOL bDateFlg = FALSE;
 
 	// Main Loop
-	for(INT _i1 = 0; _i1 < $ARGC; _i1++)
+	for(UINT _u1 = 0; _u1 < $ARGC; _u1++)
 	{
 		// -y
-		if((wp1 = iCLI_getOptValue(_i1, L"-y=", NULL)))
+		if((wp1 = iCLI_getOptValue(_u1, L"-y=", NULL)))
 		{
 			aiAdd[0] += _wtoi(wp1);
 		}
 		// -m
-		else if((wp1 = iCLI_getOptValue(_i1, L"-m=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-m=", NULL)))
 		{
 			aiAdd[1] += _wtoi(wp1);
 		}
 		// -d
-		else if((wp1 = iCLI_getOptValue(_i1, L"-d=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-d=", NULL)))
 		{
 			aiAdd[2] += _wtoi(wp1);
 		}
 		// -w
-		else if((wp1 = iCLI_getOptValue(_i1, L"-w=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-w=", NULL)))
 		{
 			aiAdd[2] += _wtoi(wp1) * 7;
 		}
 		// -h
-		else if((wp1 = iCLI_getOptValue(_i1, L"-h=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-h=", NULL)))
 		{
 			aiAdd[3] += _wtoi(wp1);
 		}
 		// -n
-		else if((wp1 = iCLI_getOptValue(_i1, L"-n=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-n=", NULL)))
 		{
 			aiAdd[4] += _wtoi(wp1);
 		}
 		// -s
-		else if((wp1 = iCLI_getOptValue(_i1, L"-s=", NULL)))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-s=", NULL)))
 		{
 			aiAdd[5] += _wtoi(wp1);
 		}
 		// -f | -format
-		else if((wp1 = iCLI_getOptValue(_i1, L"-f=", L"-format=")))
+		else if((wp1 = iCLI_getOptValue(_u1, L"-f=", L"-format=")))
 		{
 			_Format = wp1;
 		}
 		// -N
-		else if(iCLI_getOptMatch(_i1, L"-N", NULL))
+		else if(iCLI_getOptMatch(_u1, L"-N", NULL))
 		{
 			_NL = FALSE;
 		}
@@ -101,15 +101,15 @@ main()
 		{
 			if(! bDateFlg)
 			{
-				if(iCLI_getOptMatch(_i1, L".", L"now"))
+				if(iCLI_getOptMatch(_u1, L".", L"now"))
 				{
 					bDateFlg = TRUE;
 					aiDate = idate_nowToiAryYmdhns_localtime();
 				}
-				else if(idate_chk_ymdhnsW($ARGV[_i1]))
+				else if(idate_chk_ymdhnsW($ARGV[_u1]))
 				{
 					bDateFlg = TRUE;
-					aiDate = idate_WsToiAryYmdhns($ARGV[_i1]);
+					aiDate = idate_WsToiAryYmdhns($ARGV[_u1]);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ main()
 		NL();
 	}
 
-	///icalloc_mapPrint(); ifree_all(); icalloc_mapPrint();
+	///idebug_map(); ifree_all(); idebug_map();
 
 	imain_end();
 }
