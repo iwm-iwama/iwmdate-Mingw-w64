@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
-#define   IWM_VERSION         "iwmdatediff_20240226"
+#define   IWM_VERSION         "iwmdatediff_20240519"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -9,8 +9,8 @@ VOID      print_version();
 VOID      print_help();
 
 // (注)%g付けないと全て正数表示
-#define   DATE_FORMATM        "%g%y-%m-%d"
-#define   DATE_FORMATW        L"%g%y-%m-%d"
+#define   DATE_FORMAT         "%g%y-%m-%d"
+#define   DATE_FORMATW        L"" DATE_FORMAT ""
 
 // 出力フォーマット
 //   -f=STR | -format=STR
@@ -178,7 +178,7 @@ VOID
 print_help()
 {
 	MS *_cmd = "iwmdatediff.exe";
-	MS *_format = DATE_FORMATM;
+	MS *_format = DATE_FORMAT;
 
 	print_version();
 	P(
