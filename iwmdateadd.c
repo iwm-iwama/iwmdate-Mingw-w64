@@ -1,6 +1,7 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2024 iwm-iwama"
-#define   IWM_VERSION         "iwmdateadd_20240519"
+#define   IWM_FILENAME        "iwmdateadd"
+#define   IWM_UPDATE          "20240814"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -151,13 +152,9 @@ print_version()
 {
 	P1(IESC_STR2);
 	LN(80);
-	P(
-		" %s\n"
-		"    %s+%s\n"
-		,
-		IWM_COPYRIGHT,
-		IWM_VERSION,
-		LIB_IWMUTIL_VERSION
+	P1(
+		" " IWM_COPYRIGHT "\n"
+		"    " IWM_FILENAME "_" IWM_UPDATE " + " LIB_IWMUTIL_FILENAME "\n"
 	);
 	LN(80);
 	P1(IESC_RESET);
@@ -166,27 +163,20 @@ print_version()
 VOID
 print_help()
 {
-	MS *_cmd = "iwmdateadd.exe";
-	MS *_format = DATE_FORMAT;
-
 	print_version();
-	P(
-		IESC_TITLE1	" 日時の前後を計算 "	IESC_RESET	"\n\n"
-		IESC_STR1	"    %s"
+	P1(
+		IESC_TITLE1	" 日時の前後を計算 " IESC_RESET "\n\n"
+		IESC_STR1	"    " IWM_FILENAME
 		IESC_OPT1	" [Date]"
 		IESC_OPT2	" [Option]\n"
 		IESC_LBL1	"        or\n"
-		IESC_STR1	"    %s"
+		IESC_STR1	"    " IWM_FILENAME
 		IESC_OPT2	" [Option]"
 		IESC_OPT1	" [Date]\n\n\n"
 		IESC_LBL1	" (例)\n"
-		IESC_STR1	"    %s"
+		IESC_STR1	"    " IWM_FILENAME
 		IESC_OPT1	" \"2000/1/1\""
 		IESC_OPT2	" -y=8 -m=11 -d=9 -f=\"%%g%%y-%%m-%%d(%%a) %%h:%%n:%%s\"\n\n\n"
-		,
-		_cmd,
-		_cmd,
-		_cmd
 	);
 	P1(
 		IESC_OPT1	" [Date]\n"
@@ -194,11 +184,11 @@ print_help()
 					"    \"+2000/1/1\"  \"+2000-1-1\"\n"
 					"    \"+2000/1/1 00:00:00\"  \"+2000-1-1 00:00:00\"\n\n\n"
 	);
-	P(
+	P1(
 		IESC_OPT2	" [Option]\n"
 		IESC_OPT21	"    -y=[±年]  -m=[±月]  -d=[±日]  -w=[±週]  -h=[±時]  -n=[±分]  -s=[±秒]\n\n"
 					"    -format=STR | -f=STR\n"
-		IESC_STR1	"        ※STRが無指定のとき \"%s\"\n"
+		IESC_STR1	"        ※STRが無指定のとき \"" DATE_FORMAT "\"\n"
 					"        %%g：+/-表示\n"
 					"        %%y：年(0000)  %%m：月(00)  %%d：日(00)\n"
 					"        %%h：時(00)  %%n：分(00)  %%s：秒(00)\n"
@@ -208,8 +198,6 @@ print_help()
 					"        \\t：タブ  \\n：改行\n\n"
 		IESC_OPT21	"    -N\n"
 		IESC_STR1	"        改行しない\n\n\n"
-		,
-		_format
 	);
 	P1(
 		IESC_LBL1	" (備考)\n"
@@ -225,6 +213,4 @@ print_help()
 	P1(IESC_STR2);
 	LN(80);
 	P1(IESC_RESET);
-
-	ifree(_format);
 }
