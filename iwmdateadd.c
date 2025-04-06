@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 #define   IWM_COPYRIGHT       "(C)2008-2025 iwm-iwama"
 #define   IWM_FILENAME        "iwmdateadd"
-#define   IWM_UPDATE          "20250130"
+#define   IWM_UPDATE          "20250312"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -27,9 +27,12 @@ main()
 	// lib_iwmutil2 初期化
 	imain_begin();
 
+	///iCLI_VarList();
+
 	// -h | --help
 	if(! $ARGC || iCLI_getOptMatch(0, L"-h", L"--help"))
 	{
+		print_version();
 		print_help();
 		imain_end();
 	}
@@ -119,7 +122,11 @@ main()
 	// Err
 	if(! bDateFlg)
 	{
-		P2(IESC_FALSE1 "[Err] 引数 Date を入力してください!" IESC_RESET);
+		P2(
+			IESC_FALSE1
+			"[Err] 引数 Date を入力してください!"
+			IESC_RESET
+		);
 		imain_end();
 	}
 
@@ -142,7 +149,10 @@ main()
 		NL();
 	}
 
-	///idebug_map(); ifree_all(); idebug_map();
+	// Debug
+	///idebug_map();
+	///ifree_all();
+	///idebug_map();
 
 	imain_end();
 }
@@ -163,7 +173,6 @@ print_version()
 VOID
 print_help()
 {
-	print_version();
 	P1(
 		"\033[1G"	IESC_TITLE1	" 日時の前後を計算 "	IESC_RESET	"\n"
 		"\n"
@@ -200,10 +209,10 @@ print_help()
 		"\n"
 		"\033[2G"	IESC_LBL1	"(備考)"	"\n"
 		IESC_STR1
-		"\033[5G"	"・ユリウス暦 （-4712/01/01～1582/10/04）"	"\n"
-		"\033[5G"	"・グレゴリオ暦（1582/10/15～9999/12/31）"	"\n"
-		"\033[7G"	IESC_OPT22	"(注１)"	IESC_STR1	" 空白暦 1582/10/05～1582/10/14 は、\"1582/10/04\" として取扱う。"	"\n"
-		"\033[7G"	IESC_OPT22	"(注２)"	IESC_STR1	" BC暦は、\"-1/01/01\" を \"0/01/01\" として取扱う。"	"\n"
+		"\033[5G"	"・ユリウス暦   -4712/01/01..1582/10/04"	"\n"
+		"\033[5G"	"・グレゴリオ暦  1582/10/15..9999/12/31"	"\n"
+		"\033[7G"	IESC_OPT22	"(注１)"	IESC_STR1	" 空白暦 1582/10/05..1582/10/14 は前後関係を考慮し、1582/10/04 または 1582/10/15 として扱う。"	"\n"
+		"\033[7G"	IESC_OPT22	"(注２)"	IESC_STR1	" BC暦は、-1/01/01 を 0/01/01 として扱う。"	"\n"
 		"\033[7G"	IESC_OPT22	"(注３)"	IESC_STR1	" プログラム上は、修正ユリウス暦を使用。"	"\n"
 		"\n"
 	);
