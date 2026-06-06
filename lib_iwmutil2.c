@@ -4059,7 +4059,6 @@ iDV_checker(
 		ifree(wp1);
 	iDV_free(IDV);
 */
-//x v2025-03-03
 // v2026-06-05
 WS
 *idate_format(
@@ -4121,7 +4120,6 @@ WS
 						iVBW_push_sprintf(iVBW, L"%d", (iY * 12) + iM);
 						break;
 					case 'D': // 通算日
-//x						iVBW_push_sprintf(iVBW, L"%lld", iDays);
 						iVBW_push_sprintf(iVBW, L"%d", iDays);
 						break;
 					case 'H': // 通算時
@@ -4134,11 +4132,9 @@ WS
 						iVBW_push_sprintf(iVBW, L"%lld", (iDays * 24 * 60 * 60) + (iH * 60 * 60) + (iN * 60) + iS);
 						break;
 					case 'W': // 通算週
-//x						iVBW_push_sprintf(iVBW, L"%lld", (iDays / 7));
 						iVBW_push_sprintf(iVBW, L"%d", (iDays / 7));
 						break;
 					case 'w': // 通算週の余日
-//x						iVBW_push_sprintf(iVBW, L"%lld", (iDays / 7));
 						iVBW_push_sprintf(iVBW, L"%d", (iDays % 7));
 						break;
 					// 共通
