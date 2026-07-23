@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 #define IWM_COPYRIGHT "(C)2008-2026 iwm-iwama"
 #define IWM_FILENAME "iwmdateadd"
-#define IWM_UPDATE "20260618"
+#define IWM_UPDATE "20260709"
 //------------------------------------------------------------------------------
 #include "lib_iwmutil2.h"
 
@@ -104,7 +104,7 @@ INT main()
 		{
 			if (!bDateFlg)
 			{
-				if (iCLI_getOptMatch(_u1, L".", L"now"))
+				if (iCLI_getOptMatch(_u1, L".", NULL))
 				{
 					bDateFlg = TRUE;
 					aiDate = idate_nowToiAryYmdhns_localtime();
@@ -147,8 +147,6 @@ INT main()
 
 	// Debug
 	/// idebug_map(NULL);
-	/// ifree_all();
-	/// idebug_map(NULL);
 
 	imain_end();
 }
@@ -178,19 +176,19 @@ VOID print_help()
 		"\n"
 		"\033[2G" IESC_LBL1 "(例)"
 		"\n"
-		"\033[5G" IESC_STR1 IWM_FILENAME IESC_OPT1 " \"2000/1/1\"" IESC_OPT2 " -y=8 -m=11 -d=9 -f=\"%g%y-%m-%d(%a) %h:%n:%s\""
+		"\033[5G" IESC_STR1 IWM_FILENAME IESC_OPT1 " \".\"" IESC_OPT2 " -y=-1 -m=11 -d=30 -f=\"%g%y-%m-%d(%a) %h:%n:%s\""
 		"\n"
 		"\n"
 		"\033[2G" IESC_OPT1 "[Date]"
 		"\n" IESC_STR1
 		"\033[5G"
-		"now  .  (現在日時)"
+		"\".\" (現在日時)"
 		"\n"
 		"\033[5G"
-		"\"+2000/1/1\"  \"+2000-1-1\""
+		"\"+2026/1/1\"  \"+2026-1-1\""
 		"\n"
 		"\033[5G"
-		"\"+2000/1/1 00:00:00\"  \"+2000-1-1 00:00:00\""
+		"\"+2026/1/1 00:00:00\"  \"+2026-1-1 00:00:00\""
 		"\n"
 		"\n"
 		"\033[2G" IESC_OPT2 "[Option]"
